@@ -1,6 +1,7 @@
 package com.lzl.wiki.service;
 
-import com.lzl.wiki.domain.Ebook;
+import com.lzl.wiki.req.EbookReq;
+import com.lzl.wiki.resp.EbookResp;
 
 import java.util.List;
 
@@ -13,5 +14,5 @@ import java.util.List;
  * Mail：1661548820@qq.com
  **/
 public interface EbookService {
-    public List<Ebook> list();
+    public List<EbookResp> list(EbookReq req);
 }

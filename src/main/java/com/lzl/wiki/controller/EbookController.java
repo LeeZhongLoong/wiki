@@ -1,7 +1,8 @@
 package com.lzl.wiki.controller;
 
-import com.lzl.wiki.domain.Ebook;
+import com.lzl.wiki.req.EbookReq;
 import com.lzl.wiki.resp.CommonResp;
+import com.lzl.wiki.resp.EbookResp;
 import com.lzl.wiki.service.impl.EbookServiceImpl;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,10 +30,18 @@ public class EbookController {
     @Resource
     private EbookServiceImpl ebookService;
 
+    /**
+     * 根据名字模糊查询
+     * @param req
+     * @return
+     */
     @GetMapping("/list")
-    public CommonResp list(){
-        CommonResp<List<Ebook>> resp = new CommonResp<>();
-        List<Ebook> list=ebookService.list();
+    public CommonResp list(EbookReq req){
+//        创建一个统一返回值的类型
+        CommonResp<List<EbookResp>> resp = new CommonResp<>();
+//        获取数据库汇总的Ebook的记录
+        List<EbookResp> list=ebookService.list(req);
+//        放入到泛型类中
         resp.setContent(list);
         return resp;
     }
