@@ -1,5 +1,6 @@
 package com.lzl.wiki.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 //    返回json格式字符串
 @RestController
 public class TestController {
+//    使用自定义变量,如果自定义配置项没有开启就默认读出Test
+    @Value("${test.hello:Test}")
+    private String testHello;
     /**
      * 常用request请求有：GET,POST,PUT,DELETE
      *常见错误类型405请求不支持，404没有这样一个接口
@@ -26,7 +30,7 @@ public class TestController {
      */
     @GetMapping("/hello")
     public String hello(){
-        return "HelloWorld";
+        return "HelloWorld"+testHello;
     }
     @PostMapping("/hello/post")
     public String helloPost(String name){
