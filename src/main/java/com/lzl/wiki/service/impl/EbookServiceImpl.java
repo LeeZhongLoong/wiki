@@ -6,11 +6,10 @@ import com.lzl.wiki.mapper.EbookMapper;
 import com.lzl.wiki.req.EbookReq;
 import com.lzl.wiki.resp.EbookResp;
 import com.lzl.wiki.service.EbookService;
-import org.springframework.beans.BeanUtils;
+import com.lzl.wiki.utils.CopyUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,17 +35,24 @@ public class EbookServiceImpl implements EbookService {
         criteria.andNameLike("%"+req.getName()+"%");
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
 //        将ebookList转化为EbookResp
-        List<EbookResp> respList=new ArrayList<>();
-        for (Ebook ebook : ebookList) {
-            EbookResp ebookResp = new EbookResp();
+//        List<EbookResp> respList=new ArrayList<>();
+//        for (Ebook ebook : ebookList) {
+//            1、为使用工具当个赋值
+//            EbookResp ebookResp = new EbookResp();
 //            手工拷贝太慢
 //            ebookResp.setId(ebook.getId());
 //            使用Bean拷贝工具 第一个变量是要赋给另一个对象的值，第二个变量是需要得到值的变量,ebook赋值给ebookResp
-            BeanUtils.copyProperties(ebook,ebookResp);
+//            BeanUtils.copyProperties(ebook,ebookResp);
+
+//            2、使用CopyUtil自定义类，单个赋值
+//            EbookResp ebookResp = CopyUtil.copy(ebook, EbookResp.class);
 //            赋值完后放入到集合中
-            respList.add(ebookResp);
-        }
+//            respList.add(ebookResp);
+//        }
+//        使用自定义工具类List赋值
+        List<EbookResp> list = CopyUtil.copyList(ebookList, EbookResp.class);
+
 //        返回对象
-        return respList;
+        return list;
     }
 }
