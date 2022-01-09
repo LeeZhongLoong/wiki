@@ -4,4 +4,13 @@ import router from './router'
 import store from './store'
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
-createApp(App).use(Antd).use(store).use(router).mount('#app')
+//导入图标
+import * as Icons from '@ant-design/icons-vue';
+const app=createApp(App)
+app.use(Antd).use(store).use(router).mount('#app')
+
+//全局使用图标
+const icons:any=Icons;
+for (const i in icons) {
+    app.component(i,icons[i]);
+}
