@@ -47,21 +47,38 @@
     </a-layout-sider>
 <!--    页面左边内容-->
     <a-layout-content :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px'}">
-      Content
+      <pre>{{ ebooks }}{{ebooks1}}</pre>
     </a-layout-content>
   </a-layout>
 </template>
 <script lang="ts">
-import {defineComponent} from "vue";
+
+//添加声明周期onMounted
+import {defineComponent, onMounted, ref,reactive,toRef} from "vue";
 //导入axios库
 import axios from "axios";
 export default defineComponent({
   name:'Home',
   setup(){
     console.log("setup");
-    axios.get("http://localhost:8880/ebook/list?name=Spring").then((response)=>{
-      console.log(response);
-    })
+    //1、第一种方法,将数据变为响应式数据，动态数据
+    const ebooks=ref();
+    //2、第二种方法
+    const ebooks1=reactive({books:[]});
+    //初始化逻辑
+    onMounted(()=>{
+      console.log("onMounted");
+      axios.get("http://localhost:8880/ebook/list?name=Spring").then((response)=>{
+        const data=response.data;
+        ebooks.value=data.content;
+        ebooks1.books=data.content;
+        console.log(response);
+      });
+    });
+    return {
+      ebooks,
+      ebooks1:toRef(ebooks1,"books")
+    }
   }
 })
 </script>
