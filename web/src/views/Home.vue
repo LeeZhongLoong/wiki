@@ -104,7 +104,6 @@ for (let i = 0; i < 23; i++) {
 export default defineComponent({
   name:'Home',
   setup(){
-    console.log("setup");
     // console.log("111"+process.env.VUE_APP_URL);
     //1、第一种方法,将数据变为响应式数据，动态数据
     const ebooks=ref();
@@ -112,13 +111,11 @@ export default defineComponent({
     const ebooks1=reactive({books:[]});
     //初始化逻辑
     onMounted(()=>{
-      console.log("onMounted22122");
       //在main中添加了axios统一访问名
       axios.get("/ebook/list").then((response)=>{
         const data=response.data;
         ebooks.value=data.content;
         ebooks1.books=data.content;
-        console.log(response);
       });
     });
     return {
