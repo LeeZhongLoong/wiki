@@ -48,7 +48,7 @@
 <!--    页面左边内容-->
     <a-layout-content :style="{ background: '#fff', padding: '24px', margin: 0, minHeight:'550px'}">
 <!--      让他并排显示 column:3一行变为三列,gutter20每列间距为20-->
-<!--      分页-->
+<!--      分页 -->
       <a-list item-layout="vertical" size="large"  :grid="{ gutter:20,column:3}"   :data-source="ebooks">
         <template #renderItem="{ item }">
           <a-list-item key="item.name">
@@ -66,10 +66,12 @@
 <!--              />-->
 <!--            </template>-->
             <a-list-item-meta :description="item.description">
+<!--              标题-->
               <template #title>
-                <a :href="item.href">{{ item.cover }}</a>
+                <a :href="item.href">{{ item.name }}</a>
               </template>
-              <template #avatar><a-avatar :src="item.avatar" /></template>
+<!--              内容简介-->
+              <template #avatar><a-avatar :src="item.cover" /></template>
             </a-list-item-meta>
 <!--            {{ item.content }}-->
           </a-list-item>
@@ -134,7 +136,18 @@ export default defineComponent({
       ],
     }
   }
-})
+});
 </script>
+<!--改变图标的样式 scoped只在当前页面有效-->
+<style scoped>
+  .ant-avatar{
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 8%;
+    margin: 5px 0;
+
+  }
+</style>
 
 
