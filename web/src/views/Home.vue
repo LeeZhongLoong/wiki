@@ -46,9 +46,10 @@
       </a-menu>
     </a-layout-sider>
 <!--    页面左边内容-->
-    <a-layout-content :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px'}">
+    <a-layout-content :style="{ background: '#fff', padding: '24px', margin: 0, minHeight:'550px'}">
 <!--      让他并排显示 column:3一行变为三列,gutter20每列间距为20-->
-      <a-list item-layout="vertical" size="large" :grid="{ gutter:20,column:3}" :pagination="pagination" :data-source="ebooks">
+<!--      分页-->
+      <a-list item-layout="vertical" size="large"  :grid="{ gutter:20,column:3}"   :data-source="ebooks">
         <template #renderItem="{ item }">
           <a-list-item key="item.name">
             <template #actions>
@@ -109,7 +110,7 @@ export default defineComponent({
     //初始化逻辑
     onMounted(()=>{
       console.log("onMounted");
-      axios.get("http://localhost:8880/ebook/list?name=Spring").then((response)=>{
+      axios.get("http://localhost:8880/ebook/list").then((response)=>{
         const data=response.data;
         ebooks.value=data.content;
         ebooks1.books=data.content;
