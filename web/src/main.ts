@@ -6,6 +6,9 @@ import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 //导入图标
 import * as Icons from '@ant-design/icons-vue';
+import axios from "axios";
+//统一访问路径
+axios.defaults.baseURL=process.env.VUE_APP_URL;
 const app=createApp(App)
 app.use(Antd).use(store).use(router).mount('#app')
 
