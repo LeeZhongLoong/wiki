@@ -105,6 +105,7 @@ export default defineComponent({
   name:'Home',
   setup(){
     console.log("setup");
+    // console.log("111"+process.env.VUE_APP_URL);
     //1、第一种方法,将数据变为响应式数据，动态数据
     const ebooks=ref();
     //2、第二种方法
