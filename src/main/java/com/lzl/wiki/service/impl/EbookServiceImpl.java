@@ -1,5 +1,7 @@
 package com.lzl.wiki.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.lzl.wiki.domain.Ebook;
 import com.lzl.wiki.domain.EbookExample;
 import com.lzl.wiki.mapper.EbookMapper;
@@ -7,6 +9,8 @@ import com.lzl.wiki.req.EbookReq;
 import com.lzl.wiki.resp.EbookResp;
 import com.lzl.wiki.service.EbookService;
 import com.lzl.wiki.utils.CopyUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -24,6 +28,8 @@ import java.util.List;
  **/
 @Service
 public class EbookServiceImpl implements EbookService {
+//    日志
+    private static final Logger LOG= LoggerFactory.getLogger(EbookServiceImpl.class);
     //jdk自带
     @Resource
     private EbookMapper ebookMapper;
@@ -36,7 +42,15 @@ public class EbookServiceImpl implements EbookService {
         if (!ObjectUtils.isEmpty(req.getName())){
             criteria.andNameLike("%"+req.getName()+"%");
         }
+        //        支持分页第一个参数：页码，第二个参数：每一页的条数
+//        说明：从1开始，只对第一个sql有作用
+        PageHelper.startPage(1,3);
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
+        PageInfo<Ebook> pageInfo=new PageInfo<>(ebookList);
+
+//        写日志使用占位符写法("{}",xxxx)
+        LOG.info("总行数:{}",pageInfo.getTotal());
+        LOG.info("总页数:{}",pageInfo.getPages());
 //        将ebookList转化为EbookResp
 //        List<EbookResp> respList=new ArrayList<>();
 //        for (Ebook ebook : ebookList) {
