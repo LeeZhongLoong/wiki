@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EbookReq {
+//集成页面属性
+public class EbookReq  extends PageReq{
     private Long id;
 
     private String name;

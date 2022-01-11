@@ -7,6 +7,7 @@ import com.lzl.wiki.domain.EbookExample;
 import com.lzl.wiki.mapper.EbookMapper;
 import com.lzl.wiki.req.EbookReq;
 import com.lzl.wiki.resp.EbookResp;
+import com.lzl.wiki.resp.PageResp;
 import com.lzl.wiki.service.EbookService;
 import com.lzl.wiki.utils.CopyUtil;
 import org.slf4j.Logger;
@@ -36,15 +37,15 @@ public class EbookServiceImpl implements EbookService {
 //    @Autowired spring自带
 
     @Override
-    public List<EbookResp> list(EbookReq req) {
+    public PageResp<EbookResp> list(EbookReq req) {
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         if (!ObjectUtils.isEmpty(req.getName())){
             criteria.andNameLike("%"+req.getName()+"%");
         }
-        //        支持分页第一个参数：页码，第二个参数：每一页的条数
+//        支持分页第一个参数：页码，第二个参数：每一页的条数
 //        说明：从1开始，只对第一个sql有作用
-        PageHelper.startPage(1,3);
+        PageHelper.startPage(req.getPage(),req.getSize());
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
         PageInfo<Ebook> pageInfo=new PageInfo<>(ebookList);
 
@@ -68,8 +69,12 @@ public class EbookServiceImpl implements EbookService {
 //        }
 //        使用自定义工具类List赋值
         List<EbookResp> list = CopyUtil.copyList(ebookList, EbookResp.class);
-
+//        放入到分页中
+        PageResp<EbookResp> pageResp = new PageResp<>();
+//        设置总页数
+        pageResp.setTotal(pageInfo.getTotal());
+        pageResp.setList(list);
 //        返回对象
-        return list;
+        return pageResp;
     }
 }
