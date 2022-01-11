@@ -1,7 +1,7 @@
 <!--template只允许下面有一个结点-->
 <template>
   <a-layout>
-<!--    页面右边导航-->
+<!--    页面左边导航-->
     <a-layout-sider width="200" style="background: #fff">
       <a-menu
           mode="inline"
@@ -45,7 +45,7 @@
         </a-sub-menu>
       </a-menu>
     </a-layout-sider>
-<!--    页面左边内容-->
+<!--    页面右边内容-->
     <a-layout-content :style="{ background: '#fff', padding: '24px', margin: 0, minHeight:'550px'}">
 <!--      让他并排显示 column:3一行变为三列,gutter20每列间距为20-->
 <!--      分页 -->
@@ -108,20 +108,20 @@ export default defineComponent({
     //1、第一种方法,将数据变为响应式数据，动态数据
     const ebooks=ref();
     //2、第二种方法
-    const ebooks1=reactive({books:[]});
+    // const ebooks1=reactive({books:[]});
     //初始化逻辑
     onMounted(()=>{
       //在main中添加了axios统一访问名
       axios.get("/ebook/list").then((response)=>{
         const data=response.data;
         ebooks.value=data.content;
-        ebooks1.books=data.content;
+        // ebooks1.books=data.content;
       });
     });
     return {
       ebooks,
-      ebooks1:toRef(ebooks1,"books"),
-      listData,
+      // ebooks1:toRef(ebooks1,"books"),
+      // listData,
       pagination : {
         onChange: (page: any) => {
           console.log(page);
