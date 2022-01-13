@@ -50,7 +50,7 @@ export default defineComponent({
       //当前页
       current:1,
       //每页的行数
-      pageSize:2,
+      pageSize:4,
       //总页数
       total:0
     });
@@ -102,13 +102,19 @@ export default defineComponent({
     const handleQuery=(param:any)=>{
       //让查询之前有数据等待样式
       loading.value=true;
-      axios.get("/ebook/list",param).then((response)=>{
+      axios.get("/ebook/list", {
+        params:{
+          page:param.page,
+          size:param.size
+        }
+      }).then((response)=>{
         loading.value=false;
         const data=response.data;
-        ebooks.value=data.content;
+        ebooks.value=data.content.list;
 
       //  重置分页按钮
         pagination.value.current=param.page;
+        pagination.value.total=param.total;
       })
     }
   //  表格点击页码时触发点击下一页上一页
@@ -122,7 +128,12 @@ export default defineComponent({
     //初始的方法
     onMounted(function (){
       //只在方法内调用
-      handleQuery({});
+      handleQuery({
+      //  初始查询第一页
+        page:1,
+        //初始化大小
+        size:pagination.value.pageSize
+      });
     });
     //返回所有的参数
     return {

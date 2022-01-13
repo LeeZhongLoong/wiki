@@ -11,6 +11,11 @@ package com.lzl.wiki.req;
  **/
 //定义父类分页类型
 public class PageReq {
+    //    页码
+    private int page;
+    //    条数
+    private int size;
+
     @Override
     public String toString() {
         return "PageReq{" +
@@ -35,8 +40,5 @@ public class PageReq {
         this.size = size;
     }
 
-    //    页码
-    private int page;
-//    条数
-    private int size;
+
 }

@@ -17,6 +17,7 @@ insert into `ebook` (id, name, description) VALUES (1,'Spring Boot 入门教程'
 insert into `ebook` (id, name, description) VALUES (2,'Vue 入门教程','零基础入门Vue开发企业级应用开发最佳首选框架');
 insert into `ebook` (id, name, description) VALUES (3,'Python 入门教程', '零基础入门Python开发企业级开发最佳首选框架');
 insert into `ebook` (id, name, description) VALUES (4,'Mybatis 入门教程', '零基础入门Mybatis开发企业级开发最佳首选框架');
+insert into `ebook` (id, name, description) VALUES (5,'Oracle 入门教程', '零基础入门Oracle开发企业级开发最佳首选框架');
 
 
 drop table if exists `test`;
