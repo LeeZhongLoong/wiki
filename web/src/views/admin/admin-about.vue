@@ -18,16 +18,17 @@
           <img v-if="cover" :src="cover" alt="avatar">
         </template>
 <!--        第二个渲染，按钮-->
-        <template v-slot:action="{ text,record}">
+        <template v-slot:action="{text,record}">
 <!--          <a-space>两个按钮用空格分开-->
           <a-space size="small">
 <!--            添加事件-->
-              <a-button type="primary" @click="edit">
+              <a-button type="primary" @click="edit(record)">
                 编辑
               </a-button>
               <a-button type="danger">
                 删除
               </a-button>
+<!--            <h1>{{record}}</h1>-->
           </a-space>
         </template>
       </a-table>
@@ -40,7 +41,24 @@
       :confirm-loading="modalLoading"
       @ok="handleModalOk"
   >
-    <p>test</p>
+<!--    表单-->
+    <a-form :model="ebook" :label-col="{span:6}" :wrapper-col="wrapperCol">
+      <a-form-item label="封面">
+        <a-input v-model:value="ebook.cover" />
+      </a-form-item>
+      <a-form-item label="名称">
+        <a-input v-model:value="ebook.name" />
+      </a-form-item>
+      <a-form-item label="分类">
+        <a-input v-model:value="ebook.category1" />
+      </a-form-item>
+      <a-form-item label="分类二">
+        <a-input v-model:value="ebook.category2" />
+      </a-form-item>
+      <a-form-item label="描述">
+        <a-input v-model:value="ebook.desc" />
+      </a-form-item>
+    </a-form>
   </a-modal>
 </template>
 <script lang="ts">
@@ -137,6 +155,8 @@ export default defineComponent({
     };
 
     //编辑表单
+    //初始后台变量
+    const ebook=ref();
     const modalVisible=ref(false);
     const modalLoading=ref(false);
     const handleModalOk=()=>{
@@ -150,8 +170,9 @@ export default defineComponent({
     /**
      * 编辑的方法
      */
-    const edit=()=>{
+    const edit=(record:any)=>{
       modalVisible.value=true;
+      ebook.value=record;
     };
 
     //初始的方法
@@ -177,7 +198,10 @@ export default defineComponent({
 
       modalVisible,
       modalLoading,
-      handleModalOk
+      handleModalOk,
+
+    //  查出来的数据
+      ebook
 
     }
   },
