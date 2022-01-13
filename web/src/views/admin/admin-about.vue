@@ -21,7 +21,8 @@
         <template v-slot:action="{ text,record}">
 <!--          <a-space>两个按钮用空格分开-->
           <a-space size="small">
-              <a-button type="primary">
+<!--            添加事件-->
+              <a-button type="primary" @click="edit">
                 编辑
               </a-button>
               <a-button type="danger">
@@ -32,6 +33,15 @@
       </a-table>
     </a-layout-content>
   </a-layout>
+<!--  弹出框-->
+  <a-modal
+      v-model:visible="modalVisible"
+      title="电子书表单"
+      :confirm-loading="modalLoading"
+      @ok="handleModalOk"
+  >
+    <p>test</p>
+  </a-modal>
 </template>
 <script lang="ts">
 
@@ -125,6 +135,25 @@ export default defineComponent({
         size:pagination.pageSize
       });
     };
+
+    //编辑表单
+    const modalVisible=ref(false);
+    const modalLoading=ref(false);
+    const handleModalOk=()=>{
+      modalLoading.value=true;
+    //  定时器，表单2秒后关闭
+      setTimeout(()=>{
+        modalVisible.value=false;
+        modalLoading.value=false;
+      },2000)
+    };
+    /**
+     * 编辑的方法
+     */
+    const edit=()=>{
+      modalVisible.value=true;
+    };
+
     //初始的方法
     onMounted(function (){
       //只在方法内调用
@@ -141,7 +170,15 @@ export default defineComponent({
       pagination,
       columns,
       loading,
-      handleTableChange
+      handleTableChange,
+
+    //  编辑表单的参数
+      edit,
+
+      modalVisible,
+      modalLoading,
+      handleModalOk
+
     }
   },
 });

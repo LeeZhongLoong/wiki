@@ -49,7 +49,12 @@
     <a-layout-content :style="{ background: '#fff', padding: '24px', margin: 0, minHeight:'550px'}">
 <!--      让他并排显示 column:3一行变为三列,gutter20每列间距为20-->
 <!--      分页 -->
-      <a-list item-layout="vertical" size="large"  :grid="{ gutter:20,column:3}"   :data-source="ebooks">
+      <a-list item-layout="vertical" size="large"
+              :grid="{ gutter:20,column:3}"
+              :data-source="ebooks"
+              :loading="loading"
+      >
+
         <template #renderItem="{ item }">
           <a-list-item key="item.name">
             <template #actions>
@@ -109,8 +114,12 @@ export default defineComponent({
     const ebooks=ref();
     //2、第二种方法
     // const ebooks1=reactive({books:[]});
+    //加载框
+    const loading=ref(false);
     //初始化逻辑
     onMounted(()=>{
+      //设置加载框的值
+      loading.value=true;
       //在main中添加了axios统一访问名
       axios.get("/ebook/list",{
         params:{
@@ -118,6 +127,7 @@ export default defineComponent({
           size:1000
         }
       }).then((response)=>{
+        loading.value=false;
         const data=response.data;
         ebooks.value=data.content.list;
         // ebooks1.books=data.content;
@@ -138,6 +148,8 @@ export default defineComponent({
         { type: 'LikeOutlined', text: '156' },
         { type: 'MessageOutlined', text: '2' },
       ],
+    //  返回加载框的参数
+      loading
     }
   }
 });
