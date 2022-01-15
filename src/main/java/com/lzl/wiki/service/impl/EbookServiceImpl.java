@@ -5,7 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.lzl.wiki.domain.Ebook;
 import com.lzl.wiki.domain.EbookExample;
 import com.lzl.wiki.mapper.EbookMapper;
-import com.lzl.wiki.req.EbookReq;
+import com.lzl.wiki.req.EbookQueryReq;
+import com.lzl.wiki.req.EbookSaveReq;
 import com.lzl.wiki.resp.EbookResp;
 import com.lzl.wiki.resp.PageResp;
 import com.lzl.wiki.service.EbookService;
@@ -37,7 +38,7 @@ public class EbookServiceImpl implements EbookService {
 //    @Autowired spring自带
 
     @Override
-    public PageResp<EbookResp> list(EbookReq req) {
+    public PageResp<EbookResp> list(EbookQueryReq req) {
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         if (!ObjectUtils.isEmpty(req.getName())){
@@ -76,5 +77,26 @@ public class EbookServiceImpl implements EbookService {
         pageResp.setList(list);
 //        返回对象
         return pageResp;
+    }
+
+    /**
+     * 保存、修改的方法
+     * 有Id是更新，无Id是新增
+     * @param req
+     */
+    @Override
+    public void save(EbookSaveReq req) {
+//        给req转型
+        Ebook ebook=CopyUtil.copy(req,Ebook.class);
+//        判断是更新还是新增、有Id是更新无Id是新增
+        if (ObjectUtils.isEmpty(req.getId())){
+//            新增
+            ebookMapper.insert(ebook);
+        }else {
+//            更新
+//        insert是新增保存修改使用update保存
+            ebookMapper.updateByPrimaryKey(ebook);
+        }
+
     }
 }

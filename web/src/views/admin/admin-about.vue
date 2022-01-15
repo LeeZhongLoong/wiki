@@ -28,7 +28,6 @@
               <a-button type="danger">
                 删除
               </a-button>
-<!--            <h1>{{record}}</h1>-->
           </a-space>
         </template>
       </a-table>
@@ -50,13 +49,13 @@
         <a-input v-model:value="ebook.name" />
       </a-form-item>
       <a-form-item label="分类">
-        <a-input v-model:value="ebook.category1" />
+        <a-input v-model:value="ebook.category1Id" />
       </a-form-item>
       <a-form-item label="分类二">
-        <a-input v-model:value="ebook.category2" />
+        <a-input v-model:value="ebook.category2Id" />
       </a-form-item>
       <a-form-item label="描述">
-        <a-input v-model:value="ebook.desc" />
+        <a-input v-model:value="ebook.description" />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -157,15 +156,33 @@ export default defineComponent({
     //编辑表单
     //初始后台变量
     const ebook=ref();
+    //是否显示弹出框
     const modalVisible=ref(false);
+    //等待状态
     const modalLoading=ref(false);
+    //编辑表单保存的方法
     const handleModalOk=()=>{
+      //进入等待状态
       modalLoading.value=true;
-    //  定时器，表单2秒后关闭
-      setTimeout(()=>{
-        modalVisible.value=false;
-        modalLoading.value=false;
-      },2000)
+      //提交保存ebook为用户输入的内容
+      axios.post("/ebook/save",ebook.value).then((response)=>{
+        //获取返回的值
+        const data=response.data;
+        //判断是否修改成功
+        if (data.success){
+          //保存成功
+
+          //关闭弹出框
+          modalVisible.value=false;
+          //关闭等待状态
+          modalLoading.value=false;
+        //  重新查询当前页
+          handleQuery({
+            page:pagination.value.current,
+            size:pagination.value.pageSize,
+          });
+        }
+      });
     };
     /**
      * 编辑的方法
