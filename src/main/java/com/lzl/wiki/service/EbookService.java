@@ -18,4 +18,6 @@ public interface EbookService {
     public PageResp<EbookResp> list(EbookQueryReq req);
 //    保存的方法
     public void save(EbookSaveReq req);
+//    删除的方法
+    public void del(Long id);
 }

@@ -106,4 +106,13 @@ public class EbookServiceImpl implements EbookService {
         }
 
     }
+
+    /**
+     * 删除的方法
+     * @param id
+     */
+    @Override
+    public void del(Long id) {
+        ebookMapper.deleteByPrimaryKey(id);
+    }
 }

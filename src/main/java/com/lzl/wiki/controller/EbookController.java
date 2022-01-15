@@ -59,4 +59,16 @@ public class EbookController {
         ebookService.save(req);
         return resp;
     }
+
+    /**
+     * 删除的方法
+     * @param id 根据id删除
+     * @return
+     */
+    @DeleteMapping("/delete/{id}")
+    public CommonResp del(@PathVariable Long id){
+        CommonResp resp=new CommonResp();
+        ebookService.del(id);
+        return resp;
+    }
 }
