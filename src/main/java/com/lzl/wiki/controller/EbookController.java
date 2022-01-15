@@ -56,7 +56,8 @@ public class EbookController {
      */
     @PostMapping("/save")
 //    @RequestBody 请求参数是json格式，@ResponseBody是返回参数是json格式
-    public CommonResp save(@RequestBody EbookSaveReq req){
+//    @Valid参数校验
+    public CommonResp save(@Valid @RequestBody EbookSaveReq req){
         CommonResp resp=new CommonResp();
         ebookService.save(req);
         return resp;
