@@ -9,6 +9,7 @@ import com.lzl.wiki.service.impl.EbookServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 /**
  * <h3>wiki</h3>
@@ -35,7 +36,8 @@ public class EbookController {
      * @return
      */
     @GetMapping("/list")
-    public CommonResp list(EbookQueryReq req){
+//    开启参数校验 @Valid
+    public CommonResp list(@Valid EbookQueryReq req){
 //        创建一个统一返回值的类型
         CommonResp<PageResp<EbookResp>> resp = new CommonResp<>();
 //        获取数据库汇总的Ebook的记录

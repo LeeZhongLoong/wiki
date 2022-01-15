@@ -82,6 +82,8 @@
 import { defineComponent,onMounted,ref } from 'vue';
 //导入axios
 import axios from 'axios';
+//导入消息组件
+import {message} from "ant-design-vue";
 
 export default defineComponent({
   name:'AdminEbook',
@@ -95,7 +97,7 @@ export default defineComponent({
       //每页的行数
       pageSize:4,
       //总页数
-      total:0
+      total:5
     });
     //等待框的初始值
     const loading=ref(false);
@@ -145,22 +147,26 @@ export default defineComponent({
       }
     ];
   //  数据查询
-    const handleQuery=(param:any)=>{
+    const handleQuery=(params:any)=>{
       //让查询之前有数据等待样式
       loading.value=true;
       axios.get("/ebook/list", {
         params:{
-          page:1,
-          size:1000
+          page:params.page,
+          size:params.size
         }
       }).then((response)=>{
         loading.value=false;
         const data=response.data;
-        ebooks.value=data.content.list;
+        if (data.success){
+          ebooks.value=data.content.list;
 
-      //  重置分页按钮
-        pagination.value.current=param.page;
-        pagination.value.total=param.total;
+          //  重置分页按钮
+          pagination.value.current=params.page;
+          pagination.value.total=params.content.total;
+        }else{
+          message.error(data.message);
+        }
       })
     }
   //  表格点击页码时触发点击下一页上一页
