@@ -4,6 +4,12 @@
 <!--      columns每一列，row 每一行的id :data-source从后台拿出来的数据,:pagination 分页,:loading 加载的情况等待框
           @change 当表格变化时要调用的函数
 -->
+<!--      添加新增的按钮-->
+      <p>
+        <a-button type="primary" @click="add()" size="large">
+          新增
+        </a-button>
+      </p>
       <a-table
           :columns="columns"
           :row-key="record =>record.id"
@@ -107,16 +113,19 @@ export default defineComponent({
         dataIndex:'category2Id',
       },
       {
-        title: '文档书',
+        title: '文档数',
         key: 'docCount',
+        dataIndex: 'docCount'
       },
       {
         title: '阅读数',
         key: 'viewCount',
+        dataIndex: 'viewCount'
       },
       {
         title: '点赞数',
         key: 'voteCount',
+        dataIndex: 'voteCount'
       },
       {
         title: 'Action',
@@ -131,8 +140,8 @@ export default defineComponent({
       loading.value=true;
       axios.get("/ebook/list", {
         params:{
-          page:param.page,
-          size:param.size
+          page:1,
+          size:1000
         }
       }).then((response)=>{
         loading.value=false;
@@ -166,16 +175,16 @@ export default defineComponent({
       modalLoading.value=true;
       //提交保存ebook为用户输入的内容
       axios.post("/ebook/save",ebook.value).then((response)=>{
+        //关闭等待状态
+        modalLoading.value=false;
         //获取返回的值
         const data=response.data;
         //判断是否修改成功
         if (data.success){
           //保存成功
-
           //关闭弹出框
           modalVisible.value=false;
-          //关闭等待状态
-          modalLoading.value=false;
+
         //  重新查询当前页
           handleQuery({
             page:pagination.value.current,
@@ -190,6 +199,14 @@ export default defineComponent({
     const edit=(record:any)=>{
       modalVisible.value=true;
       ebook.value=record;
+    };
+    /**
+     * 新增的方法
+     * @param record
+     */
+    const add=()=>{
+      modalVisible.value=true;
+      ebook.value={};
     };
 
     //初始的方法
@@ -212,7 +229,8 @@ export default defineComponent({
 
     //  编辑表单的参数
       edit,
-
+      //新增
+      add,
       modalVisible,
       modalLoading,
       handleModalOk,

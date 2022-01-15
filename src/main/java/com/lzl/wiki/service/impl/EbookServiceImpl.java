@@ -11,6 +11,7 @@ import com.lzl.wiki.resp.EbookResp;
 import com.lzl.wiki.resp.PageResp;
 import com.lzl.wiki.service.EbookService;
 import com.lzl.wiki.utils.CopyUtil;
+import com.lzl.wiki.utils.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,10 @@ public class EbookServiceImpl implements EbookService {
     @Resource
     private EbookMapper ebookMapper;
 //    @Autowired spring自带
+
+//    添加时间戳
+    @Resource
+    private SnowFlake snowFlake;
 
     @Override
     public PageResp<EbookResp> list(EbookQueryReq req) {
@@ -91,6 +96,8 @@ public class EbookServiceImpl implements EbookService {
 //        判断是更新还是新增、有Id是更新无Id是新增
         if (ObjectUtils.isEmpty(req.getId())){
 //            新增
+//            利用雪花算法设置新增的Id,新增id有三种算法(自增，uuid，雪花算法）
+            ebook.setId(snowFlake.nextId());
             ebookMapper.insert(ebook);
         }else {
 //            更新
