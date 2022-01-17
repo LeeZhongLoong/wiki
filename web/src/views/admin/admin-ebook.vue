@@ -102,6 +102,8 @@ import { defineComponent,onMounted,ref } from 'vue';
 import axios from 'axios';
 //导入消息组件
 import {message} from "ant-design-vue";
+import {Tool} from "@/util/tool";
+//导入工具
 
 export default defineComponent({
   name:'AdminEbook',
@@ -238,7 +240,7 @@ export default defineComponent({
      */
     const edit=(record:any)=>{
       modalVisible.value=true;
-      ebook.value=record;
+      ebook.value=Tool.copy(record);
     };
     /**
      * 新增的方法
