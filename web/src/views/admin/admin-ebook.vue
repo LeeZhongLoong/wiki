@@ -6,9 +6,27 @@
 -->
 <!--      添加新增的按钮-->
       <p>
-        <a-button type="primary" @click="add()" size="large">
-          新增
-        </a-button>
+        <a-form
+        layout="inline"
+        :model="param"
+        >
+        <a-form-item>
+          <a-input v-model:value="param.name" placeholder="Username">
+          </a-input>
+        </a-form-item>
+        <a-form-item>
+        <a-space>
+          <a-button
+              type="primary"
+              @click="handleQuery({page:1,size:pagination.pageSize})">
+            查询
+          </a-button>
+          <a-button type="primary" @click="add()">
+            新增
+          </a-button>
+        </a-space>
+        </a-form-item>
+        </a-form>
       </p>
       <a-table
           :columns="columns"
@@ -88,6 +106,9 @@ import {message} from "ant-design-vue";
 export default defineComponent({
   name:'AdminEbook',
   setup() {
+    //根据名字查询
+    const param=ref();
+    param.value={};
     //后端传过来的数据
     const ebooks=ref();
     //分页的变量
@@ -153,7 +174,8 @@ export default defineComponent({
       axios.get("/ebook/list", {
         params:{
           page:params.page,
-          size:params.size
+          size:params.size,
+          name:param.value.name
         }
       }).then((response)=>{
         loading.value=false;
@@ -268,9 +290,13 @@ export default defineComponent({
       //删除
       handleDelete,
 
+      //查询
+      handleQuery,
+
       modalVisible,
       modalLoading,
       handleModalOk,
+      param,
 
     //  查出来的数据
       ebook
