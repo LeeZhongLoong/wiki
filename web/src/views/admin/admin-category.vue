@@ -31,7 +31,7 @@
       <a-table
           :columns="columns"
           :row-key="record =>record.id"
-          :data-source="ebooks"
+          :data-source="categorys"
           :pagination="pagination"
           :loading="loading"
           @change="handleTableChange"
@@ -70,26 +70,20 @@
 <!--  弹出框-->
   <a-modal
       v-model:visible="modalVisible"
-      title="电子书表单"
+      title="分类表单"
       :confirm-loading="modalLoading"
       @ok="handleModalOk"
   >
 <!--    表单-->
-    <a-form :model="ebook" :label-col="{span:6}" :wrapper-col="wrapperCol">
-      <a-form-item label="封面">
-        <a-input v-model:value="ebook.cover" />
-      </a-form-item>
+    <a-form :model="category" :label-col="{span:6}" :wrapper-col="wrapperCol">
       <a-form-item label="名称">
-        <a-input v-model:value="ebook.name" />
+        <a-input v-model:value="category.name" />
       </a-form-item>
-      <a-form-item label="分类">
-        <a-input v-model:value="ebook.category1Id" />
+      <a-form-item label="父分类">
+        <a-input v-model:value="category.parent" />
       </a-form-item>
-      <a-form-item label="分类二">
-        <a-input v-model:value="ebook.category2Id" />
-      </a-form-item>
-      <a-form-item label="描述">
-        <a-input v-model:value="ebook.description" type="textarea" />
+      <a-form-item label="顺序">
+        <a-input v-model:value="category.sort" />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -106,19 +100,19 @@ import {Tool} from "@/util/tool";
 //导入工具
 
 export default defineComponent({
-  name:'AdminEbook',
+  name:'AdminCategory',
   setup() {
     //根据名字查询
     const param=ref();
     param.value={};
     //后端传过来的数据
-    const ebooks=ref();
+    const categorys=ref();
     //分页的变量
     const pagination=ref({
       //当前页
       current:1,
       //每页的行数
-      pageSize:4,
+      pageSize:6,
       //总页数
       total:0
     });
@@ -126,41 +120,18 @@ export default defineComponent({
     const loading=ref(false);
     const columns = [
       {
-        //表格的头
-        title: '封面',
-        //表头下的表内容，他的值是数据库中的名字，每一个列中的数值
-        dataIndex: 'cover',
-        //图片渲染
-        slots: { customRender: 'cover' },
-      },
-      {
         title: '名称',
         //数据库中的值
         dataIndex: 'name',
       },
       {
-        title: '分类一',
-        key: 'category1Id',
-        dataIndex:'category1Id',
+        title: '父分类',
+        key: 'parent',
+        dataIndex:'parent',
       },
       {
-        title: '分类二',
-        dataIndex:'category2Id',
-      },
-      {
-        title: '文档数',
-        key: 'docCount',
-        dataIndex: 'docCount'
-      },
-      {
-        title: '阅读数',
-        key: 'viewCount',
-        dataIndex: 'viewCount'
-      },
-      {
-        title: '点赞数',
-        key: 'voteCount',
-        dataIndex: 'voteCount'
+        title: '顺序',
+        dataIndex:'sort',
       },
       {
         title: 'Action',
@@ -173,7 +144,7 @@ export default defineComponent({
     const handleQuery=(params:any)=>{
       //让查询之前有数据等待样式
       loading.value=true;
-      axios.get("/ebook/list", {
+      axios.get("/category/list", {
         params:{
           page:params.page,
           size:params.size,
@@ -183,7 +154,7 @@ export default defineComponent({
         loading.value=false;
         const data=response.data;
         if (data.success){
-          ebooks.value=data.content.list;
+          categorys.value=data.content.list;
 
           //  重置分页按钮
           pagination.value.current=params.page;
@@ -204,7 +175,7 @@ export default defineComponent({
 
     //编辑表单
     //初始后台变量
-    const ebook=ref();
+    const category=ref();
     //是否显示弹出框
     const modalVisible=ref(false);
     //等待状态
@@ -213,8 +184,8 @@ export default defineComponent({
     const handleModalOk=()=>{
       //进入等待状态
       modalLoading.value=true;
-      //提交保存ebook为用户输入的内容
-      axios.post("/ebook/save",ebook.value).then((response)=>{
+      //提交保存category为用户输入的内容
+      axios.post("/category/save",category.value).then((response)=>{
         //关闭等待状态
         modalLoading.value=false;
         //获取返回的值
@@ -240,7 +211,7 @@ export default defineComponent({
      */
     const edit=(record:any)=>{
       modalVisible.value=true;
-      ebook.value=Tool.copy(record);
+      category.value=Tool.copy(record);
     };
     /**
      * 新增的方法
@@ -248,14 +219,14 @@ export default defineComponent({
      */
     const add=()=>{
       modalVisible.value=true;
-      ebook.value={};
+      category.value={};
     };
 
     /**
      * 删除的方法
      */
     const handleDelete=(id:number)=>{
-      axios.delete("ebook/delete/"+id).then((response)=>{
+      axios.delete("category/delete/"+id).then((response)=>{
         const data=response.data;
         //删除成功
         if (data.success){
@@ -263,9 +234,7 @@ export default defineComponent({
           handleQuery({
             page:pagination.value.current,
             size:pagination.value.pageSize
-          });
-        }else{
-          message.error(data.message);
+          })
         }
       })
     }
@@ -281,7 +250,7 @@ export default defineComponent({
     });
     //返回所有的参数
     return {
-      ebooks,
+      categorys,
       pagination,
       columns,
       loading,
@@ -303,7 +272,7 @@ export default defineComponent({
       param,
 
     //  查出来的数据
-      ebook
+      category
 
     }
   },
