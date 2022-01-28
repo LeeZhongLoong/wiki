@@ -180,6 +180,8 @@ export default defineComponent({
     const handleQuery=(params:any)=>{
       //让查询之前有数据等待样式
       loading.value=true;
+      //查询之前先清空，可以不清空
+      ebook.value=[];
       axios.get("/ebook/list", {
         params:{
           page:params.page,
@@ -295,7 +297,7 @@ export default defineComponent({
     /**
      * 查询所有的分类
      */
-    const handlerQueryCategory=()=>{
+    const handleQueryCategory=()=>{
     //  加载框
       loading.value=true; //开启加载框
       //获取分类数据
@@ -333,7 +335,7 @@ export default defineComponent({
     //初始的方法
     onMounted(function (){
       //初始分类方法
-      handlerQueryCategory();
+      handleQueryCategory();
       //只在方法内调用
       handleQuery({
       //  初始查询第一页
