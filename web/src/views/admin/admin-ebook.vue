@@ -11,7 +11,7 @@
         :model="param"
         >
         <a-form-item>
-          <a-input v-model:value="param.name" placeholder="Username">
+          <a-input v-model:value="param.name" placeholder="名称">
           </a-input>
         </a-form-item>
         <a-form-item>
@@ -83,10 +83,12 @@
         <a-input v-model:value="ebook.name" />
       </a-form-item>
       <a-form-item label="分类">
-        <a-input v-model:value="ebook.category1Id" />
-      </a-form-item>
-      <a-form-item label="分类二">
-        <a-input v-model:value="ebook.category2Id" />
+        <a-cascader
+            v-model:value="categoryIds"
+            :field-names="{ label:'name',value:'id',children:'children'}"
+            :options="level1"
+        />
+<!--        <a-input v-model:value="ebook.category1Id" />-->
       </a-form-item>
       <a-form-item label="描述">
         <a-input v-model:value="ebook.description" type="textarea" />
@@ -103,6 +105,8 @@ import axios from 'axios';
 //导入消息组件
 import {message} from "ant-design-vue";
 import {Tool} from "@/util/tool";
+import {IDrawerProps} from "ant-design-vue/es/vc-drawer/src/IDrawerPropTypes";
+import level = IDrawerProps.level;
 //导入工具
 
 export default defineComponent({
@@ -203,6 +207,10 @@ export default defineComponent({
     };
 
     //编辑表单
+    /**
+     * 数组[100,101]对应：前端开发/Vue
+     */
+    const categoryIds=ref();
     //初始后台变量
     const ebook=ref();
     //是否显示弹出框
@@ -213,6 +221,10 @@ export default defineComponent({
     const handleModalOk=()=>{
       //进入等待状态
       modalLoading.value=true;
+      //把一级分类赋值给category1Id
+      ebook.value.category1Id=categoryIds.value[0];
+      //把二级分类赋值给category2Id
+      ebook.value.category2Id=categoryIds.value[1];
       //提交保存ebook为用户输入的内容
       axios.post("/ebook/save",ebook.value).then((response)=>{
         //关闭等待状态
@@ -241,6 +253,8 @@ export default defineComponent({
     const edit=(record:any)=>{
       modalVisible.value=true;
       ebook.value=Tool.copy(record);
+    //  把一级分类和二级分类显示出来
+      categoryIds.value=[ebook.value.category1Id,ebook.value.category2Id];
     };
     /**
      * 新增的方法
@@ -269,8 +283,39 @@ export default defineComponent({
         }
       })
     }
+
+    //定义分类
+    const level1=ref();
+    /**
+     * 查询所有的分类
+     */
+    const handlerQueryCategory=()=>{
+    //  加载框
+      loading.value=true; //开启加载框
+      //获取分类数据
+      axios.get("/category/all").then((response)=>{
+        loading.value=false; //关闭加载框
+        //赋值
+        const data=response.data;
+        if (data.success){
+          const categorys=data.content;
+          console.log("原始数据:",categorys);
+
+          //给分类赋值
+          level1.value=[];
+          //使用工具递归把数组转化为数据树
+          level1.value=Tool.array2Tree(categorys,0);
+          console.log("树形结构:",level1.value);
+        }else {
+          message.error(data.message);
+        }
+      });
+    };
+
     //初始的方法
     onMounted(function (){
+      //初始分类方法
+      handlerQueryCategory();
       //只在方法内调用
       handleQuery({
       //  初始查询第一页
@@ -281,6 +326,9 @@ export default defineComponent({
     });
     //返回所有的参数
     return {
+      //返回分类
+      categoryIds,
+      level1,
       ebooks,
       pagination,
       columns,
