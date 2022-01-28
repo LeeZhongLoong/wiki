@@ -41,7 +41,14 @@
         <template #cover="{ text:cover }">
           <img v-if="cover" :src="cover" alt="avatar">
         </template>
+<!--        增加分类渲染-->
+        <template v-slot:category="{text,record}">
+          <span>{{ getCategoryName(record.category1Id)}}/{{getCategoryName(record.category2Id)}}</span>
+        </template>
 <!--        第二个渲染，按钮-->
+<!--        text与record一样 如果要渲染text中的值使用text:text中值的名字
+            如text:cover 获取text中cover的值并渲染
+-->
         <template v-slot:action="{text,record}">
 <!--          <a-space>两个按钮用空格分开-->
           <a-space size="small">
@@ -143,13 +150,9 @@ export default defineComponent({
         dataIndex: 'name',
       },
       {
-        title: '分类一',
-        key: 'category1Id',
-        dataIndex:'category1Id',
-      },
-      {
-        title: '分类二',
-        dataIndex:'category2Id',
+        title: '分类',
+      //  渲染分类
+        slots: {customRender: 'category'}
       },
       {
         title: '文档数',
@@ -286,6 +289,9 @@ export default defineComponent({
 
     //定义分类
     const level1=ref();
+
+    //将分类置为全局变量,只在js中使用不在html中使用用let定义
+    let categorys:any;
     /**
      * 查询所有的分类
      */
@@ -298,7 +304,7 @@ export default defineComponent({
         //赋值
         const data=response.data;
         if (data.success){
-          const categorys=data.content;
+          categorys=data.content;
           console.log("原始数据:",categorys);
 
           //给分类赋值
@@ -311,7 +317,19 @@ export default defineComponent({
         }
       });
     };
-
+    /**
+     * 获取分类名字的方法
+     */
+    const getCategoryName=(cid:number)=>{
+      let result="";
+      //遍历categorys中的id如果与显示的id相同返回id中的名字
+      categorys.forEach((item:any)=>{
+        if(item.id===cid){
+          result=item.name;
+        }
+      });
+      return result;
+    };
     //初始的方法
     onMounted(function (){
       //初始分类方法
@@ -333,8 +351,11 @@ export default defineComponent({
       pagination,
       columns,
       loading,
-      handleTableChange,
 
+      //获取分类的名字
+      getCategoryName,
+
+      handleTableChange,
     //  编辑表单的参数
       edit,
       //新增
