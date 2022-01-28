@@ -5,6 +5,8 @@ import com.lzl.wiki.req.CategorySaveReq;
 import com.lzl.wiki.resp.CategoryQueryResp;
 import com.lzl.wiki.resp.PageResp;
 
+import java.util.List;
+
 /**
  * <h3>wiki</h3>
  * <p>测试类的Service</p>
@@ -20,4 +22,6 @@ public interface CategoryService {
     public void save(CategorySaveReq req);
 //    删除的方法
     public void del(Long id);
+//    只查一页
+    public List<CategoryQueryResp> all();
 }

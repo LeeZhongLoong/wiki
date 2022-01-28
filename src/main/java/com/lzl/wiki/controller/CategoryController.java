@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * <h3>wiki</h3>
@@ -42,6 +43,17 @@ public class CategoryController {
         CommonResp<PageResp<CategoryQueryResp>> resp = new CommonResp<>();
 //        获取数据库汇总的Category的记录
         PageResp<CategoryQueryResp> list=categoryService.list(req);
+//        放入到泛型类中
+        resp.setContent(list);
+        return resp;
+    }
+
+    @GetMapping("/all")
+    public CommonResp all(){
+//        创建一个统一返回值的类型
+        CommonResp<List<CategoryQueryResp>> resp = new CommonResp<>();
+//        获取数据库汇总的Category的记录
+        List<CategoryQueryResp> list=categoryService.all();
 //        放入到泛型类中
         resp.setContent(list);
         return resp;

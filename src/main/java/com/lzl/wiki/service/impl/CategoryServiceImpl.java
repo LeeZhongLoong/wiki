@@ -45,6 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public PageResp<CategoryQueryResp> list(CategoryQueryReq req) {
         CategoryExample categoryExample = new CategoryExample();
+        categoryExample.setOrderByClause("sort asc");
         CategoryExample.Criteria criteria = categoryExample.createCriteria();
 //        支持分页第一个参数：页码，第二个参数：每一页的条数
 //        说明：从1开始，只对第一个sql有作用
@@ -79,6 +80,18 @@ public class CategoryServiceImpl implements CategoryService {
         pageResp.setList(list);
 //        返回对象
         return pageResp;
+    }
+
+    @Override
+    public List<CategoryQueryResp> all() {
+        CategoryExample categoryExample = new CategoryExample();
+//        asc升序，desc降序
+        categoryExample.setOrderByClause("sort asc");
+        List<Category> categoryList = categoryMapper.selectByExample(categoryExample);
+
+        List<CategoryQueryResp> list = CopyUtil.copyList(categoryList, CategoryQueryResp.class);
+//        返回对象
+        return list;
     }
 
     /**
