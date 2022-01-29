@@ -6,42 +6,24 @@
       <a-menu
           mode="inline"
           :style="{ height: '100%', borderRight: 0 }"
+          @click="handleClick"
       >
-        <a-sub-menu key="sub1">
-          <template #title>
-              <span>
-                <user-outlined/>
-                subnav 1修改成功啦
-              </span>
+        <a-menu-item key="welcome">
+          <router-link to="'/'">
+            <CalendarOutlined/>
+            <span>欢迎</span>
+          </router-link>
+        </a-menu-item>
+
+        <a-sub-menu v-for="item in level1" :key="item.id">
+<!--            一级菜单-->
+          <template v-slot:title>
+            <span><user-outlined/>{{item.name}}</span>
           </template>
-          <a-menu-item key="1">option1</a-menu-item>
-          <a-menu-item key="2">option2</a-menu-item>
-          <a-menu-item key="3">option3</a-menu-item>
-          <a-menu-item key="4">option4</a-menu-item>
-        </a-sub-menu>
-        <a-sub-menu key="sub2">
-          <template #title>
-              <span>
-                <laptop-outlined />
-                subnav 2
-              </span>
-          </template>
-          <a-menu-item key="5">option5</a-menu-item>
-          <a-menu-item key="6">option6</a-menu-item>
-          <a-menu-item key="7">option7</a-menu-item>
-          <a-menu-item key="8">option8</a-menu-item>
-        </a-sub-menu>
-        <a-sub-menu key="sub3">
-          <template #title>
-              <span>
-                <notification-outlined />
-                subnav 3
-              </span>
-          </template>
-          <a-menu-item key="9">option9</a-menu-item>
-          <a-menu-item key="10">option10</a-menu-item>
-          <a-menu-item key="11">option11</a-menu-item>
-          <a-menu-item key="12">option12</a-menu-item>
+<!--            二级菜单-->
+          <a-menu-item v-for="child in item.children" :key="child.id">
+          <MailOutlined/> <span>{{child.name}}</span>
+          </a-menu-item>
         </a-sub-menu>
       </a-menu>
     </a-layout-sider>
@@ -88,11 +70,13 @@
 <script lang="ts">
 
 //添加声明周期onMounted
-import {defineComponent, onMounted, ref,reactive,toRef} from "vue";
+import {defineComponent, onMounted, ref} from "vue";
 //导入axios库
 import axios from "axios";
+import {message} from "ant-design-vue";
+import {Tool} from "@/util/tool";
 
-const listData: Record<string, string>[] = [];
+
 
 // for (let i = 0; i < 23; i++) {
 //   listData.push({
@@ -114,10 +98,38 @@ export default defineComponent({
     const ebooks=ref();
     //2、第二种方法
     // const ebooks1=reactive({books:[]});
+    //分类树形结构
+    const level1 = ref();
+    let categorys:any;
+    /**
+     * 查询所有分类的方法
+     */
+    const handleQueryCategory=()=>{
+      axios.get("/category/all").then((response)=>{
+        const data=response.data;
+        if (data.success){
+          categorys=data.content;
+          console.log("原始数据："+categorys);
+          level1.value=[]
+          level1.value=Tool.array2Tree(categorys,0);
+          console.log("树形结构：",level1);
+        }else {
+          message.error(data.message);
+        }
+      });
+    };
+
+    //点击事件
+    const handleClick=()=>{
+      console.log("menu click");
+    }
+
     //加载框
     const loading=ref(false);
     //初始化逻辑
     onMounted(()=>{
+      //加载所有的分类
+      handleQueryCategory();
       //设置加载框的值
       loading.value=true;
       //在main中添加了axios统一访问名
@@ -149,7 +161,10 @@ export default defineComponent({
         { type: 'MessageOutlined', text: '2' },
       ],
     //  返回加载框的参数
-      loading
+      loading,
+    //  分类方法，数组树
+      level1,
+      handleClick
     }
   }
 });
