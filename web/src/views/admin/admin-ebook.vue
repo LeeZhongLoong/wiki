@@ -298,11 +298,8 @@ export default defineComponent({
      * 查询所有的分类
      */
     const handleQueryCategory=()=>{
-    //  加载框
-      loading.value=true; //开启加载框
       //获取分类数据
       axios.get("/category/all").then((response)=>{
-        loading.value=false; //关闭加载框
         //赋值
         const data=response.data;
         if (data.success){
@@ -314,6 +311,16 @@ export default defineComponent({
           //使用工具递归把数组转化为数据树
           level1.value=Tool.array2Tree(categorys,0);
           console.log("树形结构:",level1.value);
+
+        //  防止两个axios冲突顺序调用
+          //只在方法内调用
+          //加载玩分类后，再加载电子书，否则如果分类加载很慢，则电子书选软会报错
+          handleQuery({
+            //  初始查询第一页
+            page:1,
+            //初始化大小
+            size:pagination.value.pageSize
+          });
         }else {
           message.error(data.message);
         }
@@ -336,13 +343,7 @@ export default defineComponent({
     onMounted(function (){
       //初始分类方法
       handleQueryCategory();
-      //只在方法内调用
-      handleQuery({
-      //  初始查询第一页
-        page:1,
-        //初始化大小
-        size:pagination.value.pageSize
-      });
+
     });
     //返回所有的参数
     return {
