@@ -9,10 +9,8 @@
           @click="handleClick"
       >
         <a-menu-item key="welcome">
-          <router-link to="'/'">
             <CalendarOutlined/>
             <span>欢迎</span>
-          </router-link>
         </a-menu-item>
 
         <a-sub-menu v-for="item in level1" :key="item.id">
@@ -29,9 +27,16 @@
     </a-layout-sider>
 <!--    页面右边内容-->
     <a-layout-content :style="{ background: '#fff', padding: '24px', margin: 0, minHeight:'550px'}">
+<!--      欢迎页面-->
+
+      <div class="welcome" v-show="isShowWelcome">
+        <h1>欢迎来到知识库</h1>
+      </div>
+
 <!--      让他并排显示 column:3一行变为三列,gutter20每列间距为20-->
 <!--      分页 -->
-      <a-list item-layout="vertical" size="large"
+      <a-list v-show="!isShowWelcome"
+              item-layout="vertical" size="large"
               :grid="{ gutter:20,column:3}"
               :data-source="ebooks"
               :loading="loading"
@@ -119,10 +124,17 @@ export default defineComponent({
       });
     };
 
+    const isShowWelcome=ref(true);
+
     //点击事件
-    const handleClick=()=>{
-      console.log("menu click");
+    const handleClick=(value:any)=>{
+      if (value.key==='welcome'){
+        isShowWelcome.value=true;
+      }else {
+        isShowWelcome.value=false;
+      }
     }
+
 
     //加载框
     const loading=ref(false);
@@ -164,7 +176,8 @@ export default defineComponent({
       loading,
     //  分类方法，数组树
       level1,
-      handleClick
+      handleClick,
+      isShowWelcome
     }
   }
 });
