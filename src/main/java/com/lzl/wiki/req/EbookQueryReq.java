@@ -12,4 +12,7 @@ public class EbookQueryReq extends PageReq {
     private Long id;
 
     private String name;
+
+    //    分类2
+    private Long categoryId2;
 }

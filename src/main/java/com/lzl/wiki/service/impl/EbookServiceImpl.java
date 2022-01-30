@@ -48,6 +48,8 @@ public class EbookServiceImpl implements EbookService {
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         if (!ObjectUtils.isEmpty(req.getName())){
             criteria.andNameLike("%"+req.getName()+"%");
+        } if (!ObjectUtils.isEmpty(req.getCategoryId2())){
+            criteria.andCategory2IdEqualTo(req.getCategoryId2());
         }
 //        支持分页第一个参数：页码，第二个参数：每一页的条数
 //        说明：从1开始，只对第一个sql有作用

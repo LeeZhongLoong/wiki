@@ -124,17 +124,35 @@ export default defineComponent({
       });
     };
 
+    let categoryId2=0;
     const isShowWelcome=ref(true);
+    const handleQueryEbook=()=>{
+      //在main中添加了axios统一访问名
+      axios.get("/ebook/list",{
+        params:{
+          page:1,
+          size:1000,
+          categoryId2: categoryId2
+        }
+      }).then((response)=>{
+        loading.value=false;
+        const data=response.data;
+        ebooks.value=data.content.list;
+        // ebooks1.books=data.content;
+      });
+    };
+
 
     //点击事件
     const handleClick=(value:any)=>{
       if (value.key==='welcome'){
         isShowWelcome.value=true;
       }else {
+        categoryId2=value.key;
         isShowWelcome.value=false;
+        handleQueryEbook();
       }
     }
-
 
     //加载框
     const loading=ref(false);
@@ -144,18 +162,6 @@ export default defineComponent({
       handleQueryCategory();
       //设置加载框的值
       loading.value=true;
-      //在main中添加了axios统一访问名
-      axios.get("/ebook/list",{
-        params:{
-          page:1,
-          size:1000
-        }
-      }).then((response)=>{
-        loading.value=false;
-        const data=response.data;
-        ebooks.value=data.content.list;
-        // ebooks1.books=data.content;
-      });
     });
     return {
       ebooks,
