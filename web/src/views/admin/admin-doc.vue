@@ -87,23 +87,12 @@
 
         </a-tree-select>
       </a-form-item>
-<!--      <a-form-item label="父文档">-->
-<!--&lt;!&ndash;        <a-input v-model:value="doc.parent" />&ndash;&gt;-->
-<!--        <a-select-->
-<!--            ref="select"-->
-<!--            v-model:value="doc.parent"-->
-<!--        >-->
-<!--&lt;!&ndash;          0为一级文档&ndash;&gt;-->
-<!--          <a-select-option value="0">-->
-<!--            无-->
-<!--          </a-select-option>-->
-<!--          <a-select-option v-for="c in level1" :key="c.id" :value="c.id" :disabled="doc.id ===c.id">-->
-<!--            {{c.name}}-->
-<!--          </a-select-option>-->
-<!--        </a-select>-->
-<!--      </a-form-item>-->
       <a-form-item label="顺序">
         <a-input v-model:value="doc.sort" />
+      </a-form-item>
+<!--      添加富文本-->
+      <a-form-item label="内容">
+        <div id="content"></div>
       </a-form-item>
     </a-form>
   </a-modal>
@@ -111,14 +100,17 @@
 <script lang="ts">
 
 //导入
-import { defineComponent,onMounted,ref } from 'vue';
+import {createVNode, defineComponent, onMounted, ref} from 'vue';
 //导入axios
 import axios from 'axios';
 //导入消息组件
-import {message} from "ant-design-vue";
+import {message, Modal} from "ant-design-vue";
 import {Tool} from "@/util/tool";
 import {useRoute} from "vue-router";
+import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 //导入工具
+import E from "wangeditor";
+
 
 export default defineComponent({
   name:'AdminDoc',
@@ -198,6 +190,7 @@ export default defineComponent({
     const modalVisible=ref(false);
     //等待状态
     const modalLoading=ref(false);
+
     //编辑表单保存的方法
     const handleModalOk=()=>{
       //进入等待状态
@@ -255,7 +248,11 @@ export default defineComponent({
     /**
      * 删除整个树枝
      */
-    const ids:Array<string>=[];
+    //整个树的id
+    const deleteIds:Array<string>=[];
+    //整个树的名字
+    const deleteNames:Array<string>=[];
+
     const getDeleteIds = (treeSelectData:any,id:any) => {
     //  遍历数组，既遍历某一层节点
       for (let i = 0; i < treeSelectData.length; i++) {
@@ -265,7 +262,8 @@ export default defineComponent({
           console.log("disable",node);
         //  将目标节点置为disable
         //   node.disabled=true;
-          ids.push(id);
+          deleteIds.push(id);
+          deleteNames.push(node.name);
         //  遍历所有子节点,将所有子节点全部置为disable
           const children=node.children;
           if (Tool.isNotEmpty(children)){
@@ -283,6 +281,7 @@ export default defineComponent({
       }
     }
 
+
     /**
      * 编辑的方法
      */
@@ -294,8 +293,10 @@ export default defineComponent({
       setDisable(treeSelectData.value,record.id);
     //  为选择树添加一个“无”
       treeSelectData.value.unshift({id:0,name:'无'});
-
+      const editor = new E("#content");
+      editor.create();
     };
+
     /**
      * 新增的方法
      * @param record
@@ -308,26 +309,41 @@ export default defineComponent({
       treeSelectData.value=Tool.copy(level1.value);
     //  为选择树添加一个“无”,在之前添加
       treeSelectData.value.unshift({id:0,name:'无'});
+      const editor = new E("#content");
+      editor.create();
     };
 
     /**
      * 删除的方法
      */
     const handleDelete=(id:number)=>{
+      deleteIds.length=0;
+      deleteNames.length=0;
       getDeleteIds(level1.value,id)
-      axios.delete("doc/delete/"+ids.join(",")).then((response)=>{
-        const data=response.data;
-        //删除成功
-        if (data.success){
-        //  重新加载列表
-          handleQuery()
-        }
-      })
-    }
+      Modal.confirm({
+        title:'重要提醒',
+        icon:createVNode(ExclamationCircleOutlined),
+        content:'将删除:【'+deleteNames.join(",")+"】删除后不可恢复，确认删除？",
+        onOk(){
+          axios.delete("doc/delete/"+deleteIds.join(",")).then((response)=>{
+            const data=response.data;
+            //删除成功
+            if (data.success){
+              //  重新加载列表
+              handleQuery()
+            }else {
+              message.error(data.message);
+            }
+          });
+        },
+      });
+
+    };
     //初始的方法
     onMounted(function (){
       //只在方法内调用
       handleQuery();
+
     });
     //返回所有的参数
     return {
