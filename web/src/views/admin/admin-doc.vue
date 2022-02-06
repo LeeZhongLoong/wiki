@@ -87,21 +87,21 @@
 
         </a-tree-select>
       </a-form-item>
-      <a-form-item label="父文档">
-<!--        <a-input v-model:value="doc.parent" />-->
-        <a-select
-            ref="select"
-            v-model:value="doc.parent"
-        >
-<!--          0为一级文档-->
-          <a-select-option value="0">
-            无
-          </a-select-option>
-          <a-select-option v-for="c in level1" :key="c.id" :value="c.id" :disabled="doc.id ===c.id">
-            {{c.name}}
-          </a-select-option>
-        </a-select>
-      </a-form-item>
+<!--      <a-form-item label="父文档">-->
+<!--&lt;!&ndash;        <a-input v-model:value="doc.parent" />&ndash;&gt;-->
+<!--        <a-select-->
+<!--            ref="select"-->
+<!--            v-model:value="doc.parent"-->
+<!--        >-->
+<!--&lt;!&ndash;          0为一级文档&ndash;&gt;-->
+<!--          <a-select-option value="0">-->
+<!--            无-->
+<!--          </a-select-option>-->
+<!--          <a-select-option v-for="c in level1" :key="c.id" :value="c.id" :disabled="doc.id ===c.id">-->
+<!--            {{c.name}}-->
+<!--          </a-select-option>-->
+<!--        </a-select>-->
+<!--      </a-form-item>-->
       <a-form-item label="顺序">
         <a-input v-model:value="doc.sort" />
       </a-form-item>
@@ -117,11 +117,13 @@ import axios from 'axios';
 //导入消息组件
 import {message} from "ant-design-vue";
 import {Tool} from "@/util/tool";
+import {useRoute} from "vue-router";
 //导入工具
 
 export default defineComponent({
   name:'AdminDoc',
   setup() {
+    const route=useRoute()
     //根据名字查询
     const param=ref();
     param.value={};
@@ -269,11 +271,12 @@ export default defineComponent({
      */
     const add=()=>{
       modalVisible.value=true;
-      doc.value={};
+      doc.value={
+        ebookId:route.query.ebookId
+      };
       treeSelectData.value=Tool.copy(level1.value);
     //  为选择树添加一个“无”,在之前添加
       treeSelectData.value.unshift({id:0,name:'无'});
-
     };
 
     /**
