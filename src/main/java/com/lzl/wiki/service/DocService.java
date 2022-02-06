@@ -22,6 +22,7 @@ public interface DocService {
     public void save(DocSaveReq req);
 //    删除的方法
     public void del(Long id);
+    public void del(List<String> ids);
 //    只查一页
     public List<DocQueryResp> all();
 }

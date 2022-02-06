@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -80,10 +81,12 @@ public class DocController {
      * @param id 根据id删除
      * @return
      */
-    @DeleteMapping("/delete/{id}")
-    public CommonResp del(@PathVariable Long id){
+    @DeleteMapping("/delete/{idsStr}")
+    public CommonResp del(@PathVariable String idsStr){
         CommonResp resp=new CommonResp();
-        docService.del(id);
+//        将字符串转化为数组，然后将数组转化为集合
+        List<String> list = Arrays.asList(idsStr.split(","));
+        docService.del(list);
         return resp;
     }
 }
