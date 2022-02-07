@@ -143,7 +143,7 @@ export default defineComponent({
     //等待框的初始值
     const loading=ref(false);
     const treeSelectData=ref();
-    let editor:E;
+    // let editor:E;
     treeSelectData.value=[];
 
     const columns = [
@@ -151,7 +151,7 @@ export default defineComponent({
         title: '名称',
         //数据库中的值
         dataIndex: 'name',
-        // slots:{customRender:'name'}
+        slots:{customRender:'name'}
       },
       {
         title: 'Action',
@@ -210,7 +210,8 @@ export default defineComponent({
     const modalVisible=ref(false);
     //等待状态
     const modalLoading=ref(false);
-
+    const editor = new E('#content');
+    editor.config.zIndex=0;
     // editor.config.zIndex=0;
 
 
@@ -218,8 +219,8 @@ export default defineComponent({
     const handleSave=()=>{
       //进入等待状态
       modalLoading.value=true;
-      // editor=new E('#content');
-      // doc.value.content=editor.txt.html();
+      editor.txt.html();
+      doc.value.content=editor.txt.html();
       //提交保存doc为用户输入的内容
       axios.post("/doc/save",doc.value).then((response)=>{
         //关闭等待状态
@@ -366,8 +367,7 @@ export default defineComponent({
     onMounted(function (){
       //只在方法内调用
       handleQuery();
-      const editor = new E('#content');
-      editor.config.zIndex=0;
+      // editor.config.zIndex=0;
       editor.create();
     });
     //返回所有的参数

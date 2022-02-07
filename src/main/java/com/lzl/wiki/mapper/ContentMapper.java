@@ -33,5 +33,4 @@ public interface ContentMapper {
 
     int updateByPrimaryKeyWithBLOBs(Content record);
 
-    void updateByExampleWithBLOBs(Content content);
 }

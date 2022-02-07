@@ -19,11 +19,34 @@ public class DocSaveReq {
 
     private Integer viewCount;
 
+    @NotNull(message = "【内容】不能为空")
+    private String content;
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     private Integer voteCount;
 
-//    @NotNull(message = "【内容】不能为空")
-//    private String content;
 
+
+    @Override
+    public String toString() {
+        return "DocSaveReq{" +
+                "id=" + id +
+                ", ebookId=" + ebookId +
+                ", parent=" + parent +
+                ", name='" + name + '\'' +
+                ", sort=" + sort +
+                ", viewCount=" + viewCount +
+                ", voteCount=" + voteCount +
+                ", content='" + content + '\'' +
+                '}';
+    }
 
     public Long getId() {
         return id;

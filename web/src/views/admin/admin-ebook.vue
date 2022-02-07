@@ -118,8 +118,7 @@ import axios from 'axios';
 //导入消息组件
 import {message} from "ant-design-vue";
 import {Tool} from "@/util/tool";
-import {IDrawerProps} from "ant-design-vue/es/vc-drawer/src/IDrawerPropTypes";
-import level = IDrawerProps.level;
+// import level = IDrawerProps.level;
 //导入工具
 
 export default defineComponent({

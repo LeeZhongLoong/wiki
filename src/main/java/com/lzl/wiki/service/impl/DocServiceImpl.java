@@ -2,6 +2,7 @@ package com.lzl.wiki.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.lzl.wiki.domain.Content;
 import com.lzl.wiki.domain.Doc;
 import com.lzl.wiki.domain.DocExample;
 import com.lzl.wiki.mapper.ContentMapper;
@@ -108,7 +109,7 @@ public class DocServiceImpl implements DocService {
     public void save(DocSaveReq req) {
 //        给req转型
         Doc doc=CopyUtil.copy(req,Doc.class);
-//        Content content=CopyUtil.copy(req, Content.class);
+        Content content=CopyUtil.copy(req, Content.class);
 //        判断是更新还是新增、有Id是更新无Id是新增
         if (ObjectUtils.isEmpty(req.getId())){
 //            新增
@@ -116,15 +117,17 @@ public class DocServiceImpl implements DocService {
             doc.setId(snowFlake.nextId());
             docMapper.insert(doc);
 
-//            content.setId(doc.getId());
-//            contentMapper.insert(content);
+            content.setId(doc.getId());
+            contentMapper.insert(content);
         }else {
 //            更新
 //        insert是新增保存修改使用update保存
             docMapper.updateByPrimaryKey(doc);
-//            contentMapper.updateByExampleWithBLOBs(content);
+            int count=contentMapper.updateByPrimaryKeyWithBLOBs(content);
+            if (count==0){
+                contentMapper.insert(content);
+            }
         }
-
     }
 
     /**
