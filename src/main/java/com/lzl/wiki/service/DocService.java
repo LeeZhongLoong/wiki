@@ -24,5 +24,5 @@ public interface DocService {
     public void del(Long id);
     public void del(List<String> ids);
 //    只查一页
-    public List<DocQueryResp> all();
+    public List<DocQueryResp> all(Long ebookId);
 }

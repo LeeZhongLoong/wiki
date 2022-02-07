@@ -2,8 +2,8 @@ package com.lzl.wiki.controller;
 
 import com.lzl.wiki.req.DocQueryReq;
 import com.lzl.wiki.req.DocSaveReq;
-import com.lzl.wiki.resp.DocQueryResp;
 import com.lzl.wiki.resp.CommonResp;
+import com.lzl.wiki.resp.DocQueryResp;
 import com.lzl.wiki.resp.PageResp;
 import com.lzl.wiki.service.impl.DocServiceImpl;
 import org.springframework.web.bind.annotation.*;
@@ -49,12 +49,12 @@ public class DocController {
         return resp;
     }
 
-    @GetMapping("/all")
-    public CommonResp all(){
+    @GetMapping("/all/{ebookId}")
+    public CommonResp all(@PathVariable Long ebookId){
 //        创建一个统一返回值的类型
         CommonResp<List<DocQueryResp>> resp = new CommonResp<>();
 //        获取数据库汇总的Doc的记录
-        List<DocQueryResp> list=docService.all();
+        List<DocQueryResp> list=docService.all(ebookId);
 //        放入到泛型类中
         resp.setContent(list);
         return resp;

@@ -2,8 +2,10 @@ package com.lzl.wiki.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.lzl.wiki.domain.Content;
 import com.lzl.wiki.domain.Doc;
 import com.lzl.wiki.domain.DocExample;
+import com.lzl.wiki.mapper.ContentMapper;
 import com.lzl.wiki.mapper.DocMapper;
 import com.lzl.wiki.req.DocQueryReq;
 import com.lzl.wiki.req.DocSaveReq;
@@ -36,6 +38,9 @@ public class DocServiceImpl implements DocService {
     //jdk自带
     @Resource
     private DocMapper docMapper;
+
+    @Resource
+    private ContentMapper contentMapper;
 //    @Autowired spring自带
 
 //    添加时间戳
@@ -83,8 +88,9 @@ public class DocServiceImpl implements DocService {
     }
 
     @Override
-    public List<DocQueryResp> all() {
+    public List<DocQueryResp> all(Long ebookId) {
         DocExample docExample = new DocExample();
+        docExample.createCriteria().andEbookIdEqualTo(ebookId);
 //        asc升序，desc降序
         docExample.setOrderByClause("sort asc");
         List<Doc> docList = docMapper.selectByExample(docExample);
@@ -103,16 +109,21 @@ public class DocServiceImpl implements DocService {
     public void save(DocSaveReq req) {
 //        给req转型
         Doc doc=CopyUtil.copy(req,Doc.class);
+        Content content=CopyUtil.copy(req, Content.class);
 //        判断是更新还是新增、有Id是更新无Id是新增
         if (ObjectUtils.isEmpty(req.getId())){
 //            新增
 //            利用雪花算法设置新增的Id,新增id有三种算法(自增，uuid，雪花算法）
             doc.setId(snowFlake.nextId());
             docMapper.insert(doc);
+
+            content.setId(doc.getId());
+            contentMapper.insert(content);
         }else {
 //            更新
 //        insert是新增保存修改使用update保存
             docMapper.updateByPrimaryKey(doc);
+            contentMapper.updateByExampleWithBLOBs(content);
         }
 
     }

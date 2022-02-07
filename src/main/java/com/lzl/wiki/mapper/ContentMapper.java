@@ -2,8 +2,9 @@ package com.lzl.wiki.mapper;
 
 import com.lzl.wiki.domain.Content;
 import com.lzl.wiki.domain.ContentExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface ContentMapper {
     int countByExample(ContentExample example);
@@ -31,4 +32,6 @@ public interface ContentMapper {
     int updateByPrimaryKeySelective(Content record);
 
     int updateByPrimaryKeyWithBLOBs(Content record);
+
+    void updateByExampleWithBLOBs(Content content);
 }
