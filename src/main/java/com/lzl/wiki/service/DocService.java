@@ -25,4 +25,6 @@ public interface DocService {
     public void del(List<String> ids);
 //    只查一页
     public List<DocQueryResp> all(Long ebookId);
+//    查询content中的内容
+    public String findContent(Long id);
 }

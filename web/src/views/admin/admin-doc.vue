@@ -199,6 +199,8 @@ export default defineComponent({
         }
       })
     }
+    //查询content内容
+
     //编辑表单
     //初始后台变量
     //因为数选择组件的属性状态，会随当前编辑的节点而变化，所以单独声明一个响应式变量
@@ -307,6 +309,18 @@ export default defineComponent({
       }
     }
 
+    //查询content中的内容
+    const handleQueryContent=()=>{
+      axios.get("/doc/find-content/"+doc.value.id).then((response)=>{
+        loading.value=false;
+        const data=response.data;
+        if (data.success){
+          editor.txt.html(data.content);
+        }else{
+          message.error(data.message);
+        }
+      })
+    }
 
     /**
      * 编辑的方法
@@ -314,6 +328,7 @@ export default defineComponent({
     const edit=(record:any)=>{
       modalVisible.value=true;
       doc.value=Tool.copy(record);
+      handleQueryContent();
     //  不能选择当前节点及其所有子节点，作为父节点。
       treeSelectData.value=Tool.copy(level1.value);
       setDisable(treeSelectData.value,record.id);

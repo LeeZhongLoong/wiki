@@ -89,4 +89,16 @@ public class DocController {
         docService.del(list);
         return resp;
     }
+
+    @GetMapping("/find-content/{id}")
+//    开启参数校验 @Valid
+    public CommonResp findContent(@PathVariable Long id){
+//        创建一个统一返回值的类型
+        CommonResp<String> resp = new CommonResp<>();
+//        获取数据库汇总的Doc的记录
+        String content=docService.findContent(id);
+//        放入到泛型类中
+        resp.setContent(content);
+        return resp;
+    }
 }

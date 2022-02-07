@@ -144,4 +144,9 @@ public class DocServiceImpl implements DocService {
         criteria.andIdIn(ids);
         docMapper.deleteByExample(docExample);
     }
+    @Override
+    public String findContent(Long id) {
+        Content content = contentMapper.selectByPrimaryKey(id);
+        return content.getContent();
+    }
 }
