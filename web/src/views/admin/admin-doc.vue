@@ -34,6 +34,7 @@
               :loading="loading"
               :pagination="false"
               :size="small"
+              :defaultExpandAllRows="true "
           >
             <!--        渲染用v-slot： 和# 把表格中的内容渲染为特定的对象-->
             <!--        第一个渲染封面-->
@@ -66,7 +67,7 @@
           <p>
             <a-form layout="inline" :model="param">
               <a-form-item>
-                <a-button type="primary" @click="handleSave">
+                <a-button type="primary" @click="handleSave()">
                   保存
                 </a-button>
               </a-form-item>
@@ -142,6 +143,7 @@ export default defineComponent({
     //等待框的初始值
     const loading=ref(false);
     const treeSelectData=ref();
+    let editor:E;
     treeSelectData.value=[];
 
     const columns = [
@@ -216,6 +218,8 @@ export default defineComponent({
     const handleSave=()=>{
       //进入等待状态
       modalLoading.value=true;
+      // editor=new E('#content');
+      // doc.value.content=editor.txt.html();
       //提交保存doc为用户输入的内容
       axios.post("/doc/save",doc.value).then((response)=>{
         //关闭等待状态
