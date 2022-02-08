@@ -142,6 +142,7 @@ export default defineComponent({
     const docs=ref();
     //等待框的初始值
     const loading=ref(false);
+    //因为树选择组件的属性状态，会随着当前编辑的节点二变化，所以单独声明
     const treeSelectData=ref();
     // let editor:E;
     treeSelectData.value=[];
@@ -193,6 +194,7 @@ export default defineComponent({
           console.log("树形结构：",level1);
         //  父文档下拉框初始化，相当于新增
           treeSelectData.value=Tool.copy(level1.value)||[];
+          //未选择树添加一个’无‘
           treeSelectData.value.unshift({id:0,name:'无'});
         }else{
           message.error(data.message);
