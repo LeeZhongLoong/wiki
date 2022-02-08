@@ -112,7 +112,11 @@ public class UserServiceImpl implements UserService {
         }else {
 //            更新
 //        insert是新增保存修改使用update保存
-            userMapper.updateByPrimaryKey(user);
+//            userMapper.updateByPrimaryKey(user);
+//            有值才更新
+//            防止黑客绕过前端先将登录名置为空
+            user.setLoginName(null);
+            userMapper.updateByPrimaryKeySelective(user);
         }
 
     }
