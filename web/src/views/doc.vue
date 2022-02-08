@@ -9,6 +9,7 @@
             @select="onSelect"
             :replaceFields="{title:'name',key:'id',value:'id'}"
             :defaultExpandAll="true"
+            :defaultSelectedKeys="defaultSelectedKeys"
           >
           </a-tree>
         </a-col>
@@ -43,6 +44,8 @@ export default defineComponent({
     const loading=ref(false);
     //定义content变量
     const html=ref();
+    const defaultSelectedKeys=ref();
+    defaultSelectedKeys.value=[];
 
     //  数组树
     /**
@@ -59,25 +62,6 @@ export default defineComponent({
         //一级文档树，children是二级树
     const level1=ref();
     level1.value=[];
-    //  数据查询
-    const handleQuery=()=>{
-      //让查询之前有数据等待样式
-      loading.value=true;
-      axios.get("/doc/all/"+route.query.ebookId).then((response)=>{
-        loading.value=false;
-        const data=response.data;
-        if (data.success){
-          docs.value=data.content;
-          console.log("原始数组:",docs.value);
-
-          //level1定义为数组
-          level1.value=[];
-          level1.value=Tool.array2Tree(docs.value,0);
-        }else{
-          message.error(data.message);
-        }
-      })
-    }
 
     /**
      * 内容查询
@@ -92,6 +76,31 @@ export default defineComponent({
         }
       });
     };
+    //  数据查询
+    const handleQuery=()=>{
+      //让查询之前有数据等待样式
+      loading.value=true;
+      axios.get("/doc/all/"+route.query.ebookId).then((response)=>{
+        loading.value=false;
+        const data=response.data;
+        if (data.success){
+          docs.value=data.content;
+          console.log("原始数组:",docs.value);
+
+          //level1定义为数组
+          level1.value=[];
+          level1.value=Tool.array2Tree(docs.value,0);
+          if (Tool.isNotEmpty(level1)){
+            defaultSelectedKeys.value=[level1.value[0].id];
+            handleQueryContent(level1.value[0].id);
+          }
+        }else{
+          message.error(data.message);
+        }
+      })
+    }
+
+
 
     /**
      * 根据数组Id查询
@@ -120,7 +129,8 @@ export default defineComponent({
       level1,
       loading,
       html,
-      onSelect
+      onSelect,
+      defaultSelectedKeys
 
     }
   },
