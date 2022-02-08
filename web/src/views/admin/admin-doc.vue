@@ -92,6 +92,12 @@
             <a-form-item label="顺序">
               <a-input v-model:value="doc.sort" placeholder="顺序"/>
             </a-form-item>
+<!--            添加文本预浏览-->
+            <a-form-item>
+              <a-button type="primary" @click="handlePreviewContent">
+                <EyeOutlined/> 内容预览
+              </a-button>
+            </a-form-item>
             <!--      添加富文本-->
             <a-form-item>
               <div id="content"></div>
@@ -99,7 +105,19 @@
           </a-form>
         </a-col>
       </a-row>
-
+<!--      增加抽屉组件-->
+      <a-drawer
+          width="900"
+          placement="right"
+          :closble="false"
+          :visible="drawerVisible"
+          @close="onDrawerClose"
+          class="custom-class"
+          style="color: red"
+          title="内容预览"
+      >
+        <div class="wangeditor" :innerHTML="previewHtml"></div>
+      </a-drawer>
     </a-layout-content>
   </a-layout>
 <!--  弹出框-->
@@ -383,6 +401,21 @@ export default defineComponent({
       })
     };
 
+    //富文本预览
+    //抽屉判断
+    const drawerVisible=ref(false);
+    //富文本内容
+    const previewHtml=ref();
+    const handlePreviewContent = () => {
+      const html=editor.txt.html();
+      previewHtml.value=html;
+      drawerVisible.value=true;
+    };
+
+    //关闭富文本框抽屉
+    const onDrawerClose = () => {
+      drawerVisible.value=false;
+    };
 
     //初始的方法
     onMounted(function (){
@@ -416,7 +449,16 @@ export default defineComponent({
     //  查出来的数据
       doc,
     //  更改后的leve1数据
-      treeSelectData
+      treeSelectData,
+    //  富文本开关变量
+      drawerVisible,
+    //  富文本内容
+      previewHtml,
+    //  预览富文本框抽屉
+      handlePreviewContent,
+    //  关闭抽屉方法
+      onDrawerClose
+
     }
   },
 });

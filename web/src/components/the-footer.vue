@@ -8,6 +8,7 @@
     备案：
     <img src="../assets/webicon.png" alt="avatar">
     <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=cdblog.live">黔ICP备2021010120号-2</a>
+
   </a-layout-footer>
 </template>
 
