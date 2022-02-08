@@ -1,6 +1,7 @@
 <template>
   <a-layout>
     <a-laout-content  :style="{background:'#fff',padding:'24px',margin:0,minHeight:'280px'}">
+      <h3 v-if="level1.length===0"><alert-outlined />对不起，还没有建立文档哟~</h3>
       <a-row>
         <a-col :span="6">
           <a-tree
