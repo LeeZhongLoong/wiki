@@ -209,7 +209,7 @@ export default defineComponent({
       ebookId:route.query.ebookId
     };
     //是否显示弹出框
-    const modalVisible=ref(false);
+    // const modalVisible=ref(false);
     //等待状态
     const modalLoading=ref(false);
     const editor = new E('#content');
@@ -233,8 +233,8 @@ export default defineComponent({
         if (data.success){
           //保存成功
           //关闭弹出框
-          modalVisible.value=false;
-
+          // modalVisible.value=false;
+          message.success("保存成功");
         //  重新查询当前页
           handleQuery();
         }else {
@@ -326,7 +326,9 @@ export default defineComponent({
      * 编辑的方法
      */
     const edit=(record:any)=>{
-      modalVisible.value=true;
+      //清空富文本
+      editor.txt.html("");
+      // modalVisible.value=true;
       doc.value=Tool.copy(record);
       handleQueryContent();
     //  不能选择当前节点及其所有子节点，作为父节点。
@@ -341,7 +343,9 @@ export default defineComponent({
      * @param record
      */
     const add=()=>{
-      modalVisible.value=true;
+      //清空富文本
+      editor.txt.html("");
+      // modalVisible.value=true;
       doc.value={
         ebookId:route.query.ebookId
       };
@@ -402,7 +406,7 @@ export default defineComponent({
       //查询
       handleQuery,
 
-      modalVisible,
+      // modalVisible,
       modalLoading,
       handleSave,
       param,
