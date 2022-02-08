@@ -6,14 +6,14 @@
           <a-tree
             v-if="level1.length>0"
             :tree-data="level1"
-            @select="onselect"
+            @select="onSelect"
             :replaceFields="{title:'name',key:'id',value:'id'}"
             :defaultExpandAll="true"
           >
-
           </a-tree>
         </a-col>
         <a-col :span="18">
+          <div :innerHTML="html"></div>
         </a-col>
       </a-row>
     </a-laout-content>
@@ -43,6 +43,8 @@ export default defineComponent({
     const docs=ref();
     //等待框的初始值
     const loading=ref(false);
+    //定义content变量
+    const html=ref();
 
     //  数组树
     /**
@@ -79,6 +81,35 @@ export default defineComponent({
       })
     }
 
+    /**
+     * 内容查询
+     */
+    const handleQueryContent=(id:number)=>{
+      axios.get("/doc/find-content/"+id).then((response)=>{
+        const data=response.data;
+        if (data.success){
+          html.value=data.content;
+        }else{
+          message.error(data.message);
+        }
+      });
+    };
+
+    /**
+     * 根据数组Id查询
+     * @param selectedKeys
+     * @param info
+     */
+    const onSelect = (selectedKeys:any,info:any) => {
+      console.log('selected',selectedKeys,info);
+      if (Tool.isNotEmpty(selectedKeys)){
+        handleQueryContent(selectedKeys[0]);
+      }
+    //  加载内容
+    };
+
+
+
 
     //初始的方法
     onMounted(function (){
@@ -89,7 +120,10 @@ export default defineComponent({
     return {
       //返回数组树
       level1,
-      loading
+      loading,
+      html,
+      onSelect
+
     }
   },
 });
