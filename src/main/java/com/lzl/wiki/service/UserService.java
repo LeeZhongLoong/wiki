@@ -1,9 +1,9 @@
 package com.lzl.wiki.service;
 
-import com.lzl.wiki.req.EbookQueryReq;
-import com.lzl.wiki.req.EbookSaveReq;
-import com.lzl.wiki.resp.EbookQueryResp;
+import com.lzl.wiki.req.UserQueryReq;
+import com.lzl.wiki.req.UserSaveReq;
 import com.lzl.wiki.resp.PageResp;
+import com.lzl.wiki.resp.UserQueryResp;
 
 /**
  * <h3>wiki</h3>
@@ -13,11 +13,11 @@ import com.lzl.wiki.resp.PageResp;
  * QQ:1661548820
  * Mail：1661548820@qq.com
  **/
-public interface EbookService {
+public interface UserService {
 //    查询的方法
-    public PageResp<EbookQueryResp> list(EbookQueryReq req);
+    public PageResp<UserQueryResp> list(UserQueryReq req);
 //    保存的方法
-    public void save(EbookSaveReq req);
+    public void save(UserSaveReq req);
 //    删除的方法
     public void del(Long id);
 }

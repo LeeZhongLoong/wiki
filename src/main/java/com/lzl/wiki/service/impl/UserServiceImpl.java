@@ -1,16 +1,16 @@
+
 package com.lzl.wiki.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.lzl.wiki.domain.Ebook;
-import com.lzl.wiki.domain.EbookExample;
-import com.lzl.wiki.mapper.EbookMapper;
-import com.lzl.wiki.req.EbookQueryReq;
-import com.lzl.wiki.req.EbookSaveReq;
-import com.lzl.wiki.resp.EbookQueryResp;
-import com.lzl.wiki.resp.EbookResp;
+import com.lzl.wiki.domain.User;
+import com.lzl.wiki.domain.UserExample;
+import com.lzl.wiki.mapper.UserMapper;
+import com.lzl.wiki.req.UserQueryReq;
+import com.lzl.wiki.req.UserSaveReq;
+import com.lzl.wiki.resp.UserQueryResp;
 import com.lzl.wiki.resp.PageResp;
-import com.lzl.wiki.service.EbookService;
+import com.lzl.wiki.service.UserService;
 import com.lzl.wiki.utils.CopyUtil;
 import com.lzl.wiki.utils.SnowFlake;
 import org.slf4j.Logger;
@@ -31,12 +31,12 @@ import java.util.List;
  * @date : 2022-01-08 13:46
  **/
 @Service
-public class EbookServiceImpl implements EbookService {
+public class UserServiceImpl implements UserService {
 //    日志
-    private static final Logger LOG= LoggerFactory.getLogger(EbookServiceImpl.class);
+    private static final Logger LOG= LoggerFactory.getLogger(UserServiceImpl.class);
     //jdk自带
     @Resource
-    private EbookMapper ebookMapper;
+    private UserMapper userMapper;
 //    @Autowired spring自带
 
 //    添加时间戳
@@ -44,42 +44,40 @@ public class EbookServiceImpl implements EbookService {
     private SnowFlake snowFlake;
 
     @Override
-    public PageResp<EbookQueryResp> list(EbookQueryReq req) {
-        EbookExample ebookExample = new EbookExample();
-        EbookExample.Criteria criteria = ebookExample.createCriteria();
-        if (!ObjectUtils.isEmpty(req.getName())){
-            criteria.andNameLike("%"+req.getName()+"%");
-        } if (!ObjectUtils.isEmpty(req.getCategoryId2())){
-            criteria.andCategory2IdEqualTo(req.getCategoryId2());
+    public PageResp<UserQueryResp> list(UserQueryReq req) {
+        UserExample userExample = new UserExample();
+        UserExample.Criteria criteria = userExample.createCriteria();
+        if (!ObjectUtils.isEmpty(req.getLoginName())){
+            criteria.andLoginNameEqualTo(req.getLoginName());
         }
 //        支持分页第一个参数：页码，第二个参数：每一页的条数
 //        说明：从1开始，只对第一个sql有作用
         PageHelper.startPage(req.getPage(),req.getSize());
-        List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
-        PageInfo<Ebook> pageInfo=new PageInfo<>(ebookList);
+        List<User> userList = userMapper.selectByExample(userExample);
+        PageInfo<User> pageInfo=new PageInfo<>(userList);
 
 //        写日志使用占位符写法("{}",xxxx)
         LOG.info("总行数:{}",pageInfo.getTotal());
         LOG.info("总页数:{}",pageInfo.getPages());
-//        将ebookList转化为EbookResp
-//        List<EbookResp> respList=new ArrayList<>();
-//        for (Ebook ebook : ebookList) {
+//        将userList转化为UserResp
+//        List<UserResp> respList=new ArrayList<>();
+//        for (User user : userList) {
 //            1、为使用工具当个赋值
-//            EbookResp ebookResp = new EbookResp();
+//            UserResp userResp = new UserResp();
 //            手工拷贝太慢
-//            ebookResp.setId(ebook.getId());
-//            使用Bean拷贝工具 第一个变量是要赋给另一个对象的值，第二个变量是需要得到值的变量,ebook赋值给ebookResp
-//            BeanUtils.copyProperties(ebook,ebookResp);
+//            userResp.setId(user.getId());
+//            使用Bean拷贝工具 第一个变量是要赋给另一个对象的值，第二个变量是需要得到值的变量,user赋值给userResp
+//            BeanUtils.copyProperties(user,userResp);
 
 //            2、使用CopyUtil自定义类，单个赋值
-//            EbookResp ebookResp = CopyUtil.copy(ebook, EbookResp.class);
+//            UserResp userResp = CopyUtil.copy(user, UserResp.class);
 //            赋值完后放入到集合中
-//            respList.add(ebookResp);
+//            respList.add(userResp);
 //        }
 //        使用自定义工具类List赋值
-        List<EbookQueryResp> list = CopyUtil.copyList(ebookList, EbookQueryResp.class);
+        List<UserQueryResp> list = CopyUtil.copyList(userList, UserQueryResp.class);
 //        放入到分页中
-        PageResp<EbookQueryResp> pageResp = new PageResp<>();
+        PageResp<UserQueryResp> pageResp = new PageResp<>();
 //        设置总页数
         pageResp.setTotal(pageInfo.getTotal());
         pageResp.setList(list);
@@ -93,19 +91,19 @@ public class EbookServiceImpl implements EbookService {
      * @param req
      */
     @Override
-    public void save(EbookSaveReq req) {
+    public void save(UserSaveReq req) {
 //        给req转型
-        Ebook ebook=CopyUtil.copy(req,Ebook.class);
+        User user=CopyUtil.copy(req,User.class);
 //        判断是更新还是新增、有Id是更新无Id是新增
         if (ObjectUtils.isEmpty(req.getId())){
 //            新增
 //            利用雪花算法设置新增的Id,新增id有三种算法(自增，uuid，雪花算法）
-            ebook.setId(snowFlake.nextId());
-            ebookMapper.insert(ebook);
+            user.setId(snowFlake.nextId());
+            userMapper.insert(user);
         }else {
 //            更新
 //        insert是新增保存修改使用update保存
-            ebookMapper.updateByPrimaryKey(ebook);
+            userMapper.updateByPrimaryKey(user);
         }
 
     }
@@ -116,6 +114,6 @@ public class EbookServiceImpl implements EbookService {
      */
     @Override
     public void del(Long id) {
-        ebookMapper.deleteByPrimaryKey(id);
+        userMapper.deleteByPrimaryKey(id);
     }
 }
