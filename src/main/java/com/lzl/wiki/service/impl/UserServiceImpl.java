@@ -5,17 +5,20 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lzl.wiki.domain.User;
 import com.lzl.wiki.domain.UserExample;
+import com.lzl.wiki.exception.BusinessException;
+import com.lzl.wiki.exception.BusinessExceptionCode;
 import com.lzl.wiki.mapper.UserMapper;
 import com.lzl.wiki.req.UserQueryReq;
 import com.lzl.wiki.req.UserSaveReq;
-import com.lzl.wiki.resp.UserQueryResp;
 import com.lzl.wiki.resp.PageResp;
+import com.lzl.wiki.resp.UserQueryResp;
 import com.lzl.wiki.service.UserService;
 import com.lzl.wiki.utils.CopyUtil;
 import com.lzl.wiki.utils.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
@@ -96,10 +99,16 @@ public class UserServiceImpl implements UserService {
         User user=CopyUtil.copy(req,User.class);
 //        判断是更新还是新增、有Id是更新无Id是新增
         if (ObjectUtils.isEmpty(req.getId())){
-//            新增
+           if (ObjectUtils.isEmpty(selectByLoginName(req.getLoginName()))){
+               //            新增
 //            利用雪花算法设置新增的Id,新增id有三种算法(自增，uuid，雪花算法）
-            user.setId(snowFlake.nextId());
-            userMapper.insert(user);
+               user.setId(snowFlake.nextId());
+               userMapper.insert(user);
+           }else {
+//               用户名已存在
+               throw new BusinessException(BusinessExceptionCode.USER_LOGIN_NAME_EXIST);
+           }
+
         }else {
 //            更新
 //        insert是新增保存修改使用update保存
@@ -116,4 +125,18 @@ public class UserServiceImpl implements UserService {
     public void del(Long id) {
         userMapper.deleteByPrimaryKey(id);
     }
+
+    @Override
+    public User selectByLoginName(String loginName) {
+        UserExample userExample = new UserExample();
+        UserExample.Criteria criteria = userExample.createCriteria();
+        criteria.andLoginNameEqualTo(loginName);
+        List<User> userList = userMapper.selectByExample(userExample);
+        if (CollectionUtils.isEmpty(userList)){
+            return null;
+        }else {
+            return userList.get(0);
+        }
+    }
+
 }

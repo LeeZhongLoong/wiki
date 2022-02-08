@@ -1,5 +1,6 @@
 package com.lzl.wiki.service;
 
+import com.lzl.wiki.domain.User;
 import com.lzl.wiki.req.UserQueryReq;
 import com.lzl.wiki.req.UserSaveReq;
 import com.lzl.wiki.resp.PageResp;
@@ -20,4 +21,6 @@ public interface UserService {
     public void save(UserSaveReq req);
 //    删除的方法
     public void del(Long id);
+//    根据用户名查找
+    public User selectByLoginName(String loginName);
 }

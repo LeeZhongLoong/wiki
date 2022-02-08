@@ -1,5 +1,6 @@
 package com.lzl.wiki.controller;
 
+import com.lzl.wiki.exception.BusinessException;
 import com.lzl.wiki.resp.CommonResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,30 @@ public class ControllerExceptionHandler {
         commonResp.setSuccess(false);
 //        把异常信息放入到返回统一返回对象中的message中
         commonResp.setMessage(e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        return commonResp;
+    }
+
+    @ExceptionHandler(value = BusinessException.class)
+    @ResponseBody
+    public CommonResp validExceptionHandler(BusinessException e){
+        CommonResp commonResp=new CommonResp();
+        LOG.warn("业务异常{}",e.getCode().getDesc());
+//        设置错误
+        commonResp.setSuccess(false);
+//        把异常信息放入到返回统一返回对象中的message中
+        commonResp.setMessage(e.getCode().getDesc());
+        return commonResp;
+    }
+
+    @ExceptionHandler(value = Exception.class)
+    @ResponseBody
+    public CommonResp validExceptionHandler(Exception e){
+        CommonResp commonResp=new CommonResp();
+        LOG.warn("系统异常:",e);
+//        设置错误
+        commonResp.setSuccess(false);
+//        把异常信息放入到返回统一返回对象中的message中
+        commonResp.setMessage("系统出现异常，请联系管理员~");
         return commonResp;
     }
 
