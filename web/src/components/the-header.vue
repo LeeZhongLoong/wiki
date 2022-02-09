@@ -43,7 +43,7 @@
           <a-input v-model:value="loginUser.loginName" />
         </a-form-item>
         <a-form-item label="密码">
-          <a-input v-model:value="loginUser.password" />
+          <a-input v-model:value="loginUser.password"/>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -52,7 +52,13 @@
 
 <!--定义的组件-->
 <script lang="ts">
-import {defineComponent, onMounted, ref} from 'vue';
+import {defineComponent, ref} from 'vue';
+import axios from "axios";
+import {message} from "ant-design-vue";
+//密码加密
+declare let hexMd5:any;
+//盐值
+declare let KEY:any;
 
 export default defineComponent({
   //组件名字
@@ -74,6 +80,18 @@ export default defineComponent({
     //登录方法
     const login = () => {
       console.log("开始登录")
+      loginModalLoading.value=true;
+      loginUser.value.password=hexMd5(loginUser.value.password+KEY);
+      axios.post('user/login',loginUser.value).then((response)=>{
+        loginModalLoading.value=false;
+        const data=response.data;
+        if (data.success){
+          loginModalVisible.value=false;
+          message.success("已安全着陆~！");
+        }else {
+          message.error(data.message);
+        }
+      });
     };
    return{
       loginModalVisible,
@@ -88,9 +106,9 @@ export default defineComponent({
 
 <style>
 .login-menu{
-  position: relative;
+  position: absolute;
   left: 1300px;
+  /*float: right;*/
   color: white;
-  float: right;
 }
 </style>
