@@ -40,7 +40,7 @@
 <!--          <a-space>两个按钮用空格分开-->
           <a-space size="small">
 <!--            添加事件-->
-             <a-button type="primary">
+             <a-button type="primary" @click="resetPassword(record)">
                重置密码
              </a-button>
               <a-button type="primary" @click="edit(record)">
@@ -81,6 +81,21 @@
       </a-form-item>
       <a-form-item label="密码" v-show="!user.id">
 <!--        v-if试用一开始就要判断 v-show适用于动态变化-->
+        <a-input v-model:value="user.password" />
+      </a-form-item>
+    </a-form>
+  </a-modal>
+  <!--  弹出框-->
+  <a-modal
+      title="重置密码"
+      v-model:visible="resetModalVisible"
+      :confirm-loading="resetModalLoading"
+      @ok="handleResetModalOk"
+  >
+    <!--    表单-->
+    <a-form :model="user" :label-col="{span:6}" :wrapper-col="{span:18}">
+      <a-form-item label="新密码">
+        <!--        v-if试用一开始就要判断 v-show适用于动态变化-->
         <a-input v-model:value="user.password" />
       </a-form-item>
     </a-form>
@@ -244,6 +259,52 @@ export default defineComponent({
         }
       });
     };
+
+    //重置密码的表单
+    /**
+     * 数组[100,101]对应：前端开发/Vue
+     */
+    //是否显示弹出框
+    const resetModalVisible=ref(false);
+    //等待状态
+    const resetModalLoading=ref(false);
+    //编辑表单保存的方法
+    const handleResetModalOk=()=>{
+      //进入等待状态
+      resetModalLoading.value=true;
+      //加密密码并加上盐值
+      user.value.password=hexMd5(user.value.password+KEY);
+      //提交保存ebook为用户输入的内容
+      axios.post("/user/reset-password ",user.value).then((response)=>{
+        //关闭等待状态
+        resetModalLoading.value=false;
+        //获取返回的值
+        const data=response.data;
+        //判断是否修改成功
+        if (data.success){
+          //保存成功
+          //关闭弹出框
+          resetModalVisible.value=false;
+
+          //  重新查询当前页
+          handleQuery({
+            page:pagination.value.current,
+            size:pagination.value.pageSize,
+          });
+        }else {
+          message.error(data.message);
+        }
+      });
+    };
+
+    /**
+     * 编辑
+     */
+    const resetPassword = (record:any) => {
+      resetModalVisible.value=true;
+      user.value=Tool.copy(record);
+      user.value.password=null;
+    }
     //初始的方法
     onMounted(function (){
       handleQuery({
@@ -266,11 +327,17 @@ export default defineComponent({
 
       modalVisible,
       modalLoading,
+
       handleModalOk,
       handleDelete,
       param,
       add,
-      edit
+      edit,
+      resetModalVisible,
+      resetModalLoading,
+      handleResetModalOk,
+      resetPassword
+
     }
   },
 });

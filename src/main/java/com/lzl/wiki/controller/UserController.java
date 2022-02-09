@@ -1,6 +1,7 @@
 package com.lzl.wiki.controller;
 
 import com.lzl.wiki.req.UserQueryReq;
+import com.lzl.wiki.req.UserResetPasswordReq;
 import com.lzl.wiki.req.UserSaveReq;
 import com.lzl.wiki.resp.CommonResp;
 import com.lzl.wiki.resp.PageResp;
@@ -65,6 +66,8 @@ public class UserController {
         return resp;
     }
 
+
+
     /**
      * 删除的方法
      * @param id 根据id删除
@@ -74,6 +77,21 @@ public class UserController {
     public CommonResp del(@PathVariable Long id){
         CommonResp resp=new CommonResp();
         userService.del(id);
+        return resp;
+    }
+
+    /**
+     *
+     * @param req
+     * @return
+     */
+    @PostMapping("/reset-password")
+//    @RequestBody 请求参数是json格式，@ResponseBody是返回参数是json格式
+//    @Valid参数校验
+    public CommonResp resetPassword(@Valid @RequestBody UserResetPasswordReq req){
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
+        CommonResp resp=new CommonResp();
+        userService.resetPassword(req);
         return resp;
     }
 }

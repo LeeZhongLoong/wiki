@@ -9,6 +9,7 @@ import com.lzl.wiki.exception.BusinessException;
 import com.lzl.wiki.exception.BusinessExceptionCode;
 import com.lzl.wiki.mapper.UserMapper;
 import com.lzl.wiki.req.UserQueryReq;
+import com.lzl.wiki.req.UserResetPasswordReq;
 import com.lzl.wiki.req.UserSaveReq;
 import com.lzl.wiki.resp.PageResp;
 import com.lzl.wiki.resp.UserQueryResp;
@@ -145,4 +146,15 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * 修改密码
+     *
+     * @param req
+     */
+    @Override
+    public void resetPassword(UserResetPasswordReq req) {
+//        给req转型
+        User user=CopyUtil.copy(req,User.class);
+        userMapper.updateByPrimaryKeySelective(user);
+    }
 }
