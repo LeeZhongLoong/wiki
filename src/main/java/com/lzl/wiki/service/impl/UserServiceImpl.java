@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 //    @Autowired spring自带
 
-//    添加时间戳
+//    添加时间戳,雪花算法
     @Resource
     private SnowFlake snowFlake;
 

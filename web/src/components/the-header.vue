@@ -23,8 +23,8 @@
         <router-link to="/about">关于我们</router-link>
       </a-menu-item>
       <a class="login-menu" @click="showLoginModal">
+        <rocket-outlined/>
         <a-space>
-          <rocket-outlined/>
           <span>登录</span>
         </a-space>
       </a>

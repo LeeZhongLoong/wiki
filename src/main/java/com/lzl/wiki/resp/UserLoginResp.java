@@ -1,11 +1,23 @@
 package com.lzl.wiki.resp;
 
-public class UserLoginResp {
+import java.io.Serializable;
+
+public class UserLoginResp implements Serializable {
     private Long id;
 
     private String loginName;
 
     private String name;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    private String token;
 
     public Long getId() {
         return id;
@@ -37,6 +49,8 @@ public class UserLoginResp {
                 "id=" + id +
                 ", loginName='" + loginName + '\'' +
                 ", name='" + name + '\'' +
+                ", token='" + token + '\'' +
                 '}';
     }
+
 }
