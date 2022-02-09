@@ -116,6 +116,8 @@ public class UserServiceImpl implements UserService {
 //            有值才更新
 //            防止黑客绕过前端先将登录名置为空
             user.setLoginName(null);
+//            不修改密码
+            user.setPassword(null);
             userMapper.updateByPrimaryKeySelective(user);
         }
 
