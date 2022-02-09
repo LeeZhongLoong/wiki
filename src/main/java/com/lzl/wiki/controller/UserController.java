@@ -127,7 +127,7 @@ public class UserController {
         UserLoginResp userLoginResp=userService.login(req);
 //        通过雪花算法添加token,单点登录
         Long token = snowFlake.nextId();
-        LOG.info("生成单点登录token{}，并放入到redis中",token);
+        LOG.info("生成单点登录token:{}，并放入到redis中",token);
 //        将token放入返回对象中
         userLoginResp.setToken(token.toString());
 //        将token放入到redis中3600ms=一小时

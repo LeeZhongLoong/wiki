@@ -2,13 +2,15 @@ package com.lzl.wiki.controller;
 
 import com.lzl.wiki.domain.Test;
 import com.lzl.wiki.service.impl.TestServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <h3>wiki</h3>
@@ -24,6 +26,12 @@ import java.util.List;
 //    返回json格式字符串
 @RestController
 public class TestController {
+//    加入redis
+    @Resource
+    private RedisTemplate<Long,String> redisTemplate;
+//    日志
+    //    日志放入类
+        private static final Logger LOG= LoggerFactory.getLogger(TestController.class);
 //    使用自定义变量,如果自定义配置项没有开启就默认读出Test
     @Value("${test.hello:Test}")
     private String testHello;
@@ -49,5 +57,20 @@ public class TestController {
     @GetMapping("/test/list")
     public List<Test> list(){
         return testService.list();
+    }
+
+//    添加key和value
+    @RequestMapping("/redis/set/{key}/{value}")
+    public String set(@PathVariable Long key,@PathVariable String value){
+        redisTemplate.opsForValue().set(key,value,3600*24, TimeUnit.SECONDS);
+        LOG.info("key:{},value:{}",key,value);
+        return "success";
+    }
+//  获取key中的value
+    @RequestMapping("/redis/get/{key}")
+    public Object get(@PathVariable Long key){
+        Object object = redisTemplate.opsForValue().get(key);
+        LOG.info("key:{},value:{}",key,object);
+        return object;
     }
 }
