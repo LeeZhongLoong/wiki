@@ -1,10 +1,12 @@
 package com.lzl.wiki.service;
 
 import com.lzl.wiki.domain.User;
+import com.lzl.wiki.req.UserLoginReq;
 import com.lzl.wiki.req.UserQueryReq;
 import com.lzl.wiki.req.UserResetPasswordReq;
 import com.lzl.wiki.req.UserSaveReq;
 import com.lzl.wiki.resp.PageResp;
+import com.lzl.wiki.resp.UserLoginResp;
 import com.lzl.wiki.resp.UserQueryResp;
 
 /**
@@ -26,4 +28,6 @@ public interface UserService {
     public User selectByLoginName(String loginName);
 //    修改密码
     public void resetPassword(UserResetPasswordReq req);
+//    登录
+    public UserLoginResp login(UserLoginReq req);
 }

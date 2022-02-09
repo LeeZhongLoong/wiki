@@ -1,10 +1,12 @@
 package com.lzl.wiki.controller;
 
+import com.lzl.wiki.req.UserLoginReq;
 import com.lzl.wiki.req.UserQueryReq;
 import com.lzl.wiki.req.UserResetPasswordReq;
 import com.lzl.wiki.req.UserSaveReq;
 import com.lzl.wiki.resp.CommonResp;
 import com.lzl.wiki.resp.PageResp;
+import com.lzl.wiki.resp.UserLoginResp;
 import com.lzl.wiki.resp.UserQueryResp;
 import com.lzl.wiki.service.impl.UserServiceImpl;
 import org.springframework.util.DigestUtils;
@@ -81,7 +83,7 @@ public class UserController {
     }
 
     /**
-     *
+     *重置密码的方法
      * @param req
      * @return
      */
@@ -92,6 +94,22 @@ public class UserController {
         req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
         CommonResp resp=new CommonResp();
         userService.resetPassword(req);
+        return resp;
+    }
+
+    /**
+     *重置密码的方法
+     * @param req
+     * @return
+     */
+    @PostMapping("/login")
+//    @RequestBody 请求参数是json格式，@ResponseBody是返回参数是json格式
+//    @Valid参数校验
+    public CommonResp login(@Valid @RequestBody UserLoginReq req){
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
+        CommonResp<UserLoginResp> resp=new CommonResp();
+        UserLoginResp userLoginResp=userService.login(req);
+        resp.setContent(userLoginResp);
         return resp;
     }
 }

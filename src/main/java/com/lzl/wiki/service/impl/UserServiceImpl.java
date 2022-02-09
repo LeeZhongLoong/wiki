@@ -8,10 +8,12 @@ import com.lzl.wiki.domain.UserExample;
 import com.lzl.wiki.exception.BusinessException;
 import com.lzl.wiki.exception.BusinessExceptionCode;
 import com.lzl.wiki.mapper.UserMapper;
+import com.lzl.wiki.req.UserLoginReq;
 import com.lzl.wiki.req.UserQueryReq;
 import com.lzl.wiki.req.UserResetPasswordReq;
 import com.lzl.wiki.req.UserSaveReq;
 import com.lzl.wiki.resp.PageResp;
+import com.lzl.wiki.resp.UserLoginResp;
 import com.lzl.wiki.resp.UserQueryResp;
 import com.lzl.wiki.service.UserService;
 import com.lzl.wiki.utils.CopyUtil;
@@ -156,5 +158,31 @@ public class UserServiceImpl implements UserService {
 //        给req转型
         User user=CopyUtil.copy(req,User.class);
         userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    /**
+     * 登录的方法
+     *
+     * @param req
+     */
+    @Override
+    public UserLoginResp login(UserLoginReq req) {
+        User userDb = selectByLoginName(req.getLoginName());
+        if (ObjectUtils.isEmpty(userDb)){
+//            用户不存在
+            LOG.info("用户名不存在,{}",req.getLoginName());
+            throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
+        }else {
+            if (userDb.getPassword().equals(req.getPassword())){
+//            密码正常
+                UserLoginResp userLoginResp= CopyUtil.copy(userDb,UserLoginResp.class);
+                return userLoginResp;
+
+            }else {
+//                密码错误
+                LOG.info("用户:{}  密码:{}【错误】",req.getLoginName(),req.getPassword());
+                throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
+            }
+        }
     }
 }
