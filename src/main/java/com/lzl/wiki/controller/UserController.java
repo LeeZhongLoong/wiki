@@ -6,6 +6,7 @@ import com.lzl.wiki.resp.CommonResp;
 import com.lzl.wiki.resp.PageResp;
 import com.lzl.wiki.resp.UserQueryResp;
 import com.lzl.wiki.service.impl.UserServiceImpl;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -58,6 +59,7 @@ public class UserController {
 //    @RequestBody 请求参数是json格式，@ResponseBody是返回参数是json格式
 //    @Valid参数校验
     public CommonResp save(@Valid @RequestBody UserSaveReq req){
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
         CommonResp resp=new CommonResp();
         userService.save(req);
         return resp;

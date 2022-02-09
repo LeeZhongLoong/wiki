@@ -188,7 +188,8 @@ export default defineComponent({
     const handleModalOk=()=>{
       //进入等待状态
       modalLoading.value=true;
-      // user.value.password=hexMd5(user.value.password+KEY);
+      //加密密码并加上盐值
+      user.value.password=hexMd5(user.value.password+KEY);
       //提交保存ebook为用户输入的内容
       axios.post("/user/save ",user.value).then((response)=>{
         //关闭等待状态
