@@ -22,10 +22,13 @@
       <a-menu-item key="/about">
         <router-link to="/about">关于我们</router-link>
       </a-menu-item>
-      <a class="login-menu" @click="showLoginModal">
+      <a class="login-menu" v-show="user.id">
+        你好哇~:{{user.name}}
+      </a>
+      <a class="login-menu" @click="showLoginModal" v-show="!user.id">
         <rocket-outlined/>
         <a-space>
-          <span>登录</span>
+          登录
         </a-space>
       </a>
     </a-menu>
@@ -64,9 +67,13 @@ export default defineComponent({
   //组件名字
   name: 'the-header',
   setup(){
+    //用来显示登录名的变量
+    const user=ref()
+    user.value={};
+    //用来登录的变量
     const loginUser=ref({
       loginName:"test",
-      password:"test"
+      password:"test123"
     });
    // 显示框变量
    const loginModalVisible=ref(false);
@@ -88,6 +95,7 @@ export default defineComponent({
         if (data.success){
           loginModalVisible.value=false;
           message.success("已安全着陆~！");
+          user.value=data.content;
         }else {
           message.error(data.message);
         }
@@ -97,8 +105,10 @@ export default defineComponent({
       loginModalVisible,
       loginModalLoading,
       loginUser,
+      user,
       showLoginModal,
-      login,
+      login
+
    };
   },
 });
