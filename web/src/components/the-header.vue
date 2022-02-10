@@ -28,9 +28,22 @@
       <a class="login-menu" @click="showLoginModal" v-show="!user.id">
         <rocket-outlined/>
         <a-space>
-          登录
+          登&nbsp;录
         </a-space>
       </a>
+
+      <a-popconfirm
+          title="真的要离开吗？"
+          ok-text="意已决!"
+          cancel-text="再想想吧"
+          @confirm="logout()"
+      >
+        <a class="login-logout" v-show="user.id">
+          <a-space>
+            登出
+          </a-space>
+        </a>
+      </a-popconfirm>
     </a-menu>
     <a-modal
         title="登录"
@@ -96,7 +109,21 @@ export default defineComponent({
           loginModalVisible.value=false;
           message.success("已安全着陆~！");
           //commit触发store中mutations内的方法, 登录成功后给全局变量赋值
-          store.commit("setUser",user.value);
+          store.commit("setUser",data.content);
+        }else {
+          message.error(data.message);
+        }
+      });
+    };
+   // 退出登录
+    const logout = () => {
+      console.log("退出登录开始")
+      axios.get('user/logout/'+user.value.token).then((response)=>{
+        const data=response.data;
+        if (data.success){
+          message.success("下次再见~~！");
+          //commit触发store中mutations内的方法, 登录成功后给全局变量赋值
+          store.commit("setUser",{});
         }else {
           message.error(data.message);
         }
@@ -108,7 +135,8 @@ export default defineComponent({
       loginUser,
       user,
       showLoginModal,
-      login
+      login,
+      logout
 
    };
   },
@@ -118,7 +146,13 @@ export default defineComponent({
 <style>
 .login-menu{
   position: absolute;
-  left: 1300px;
+  left: 1250px;
+  /*float: right;*/
+  color: white;
+}
+.login-logout{
+  position: absolute;
+  left: 1400px;
   /*float: right;*/
   color: white;
 }
