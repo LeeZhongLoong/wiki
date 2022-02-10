@@ -9,6 +9,8 @@ public class UserLoginResp implements Serializable {
 
     private String name;
 
+    private String  token;
+
     public String getToken() {
         return token;
     }
@@ -16,8 +18,6 @@ public class UserLoginResp implements Serializable {
     public void setToken(String token) {
         this.token = token;
     }
-
-    private String token;
 
     public Long getId() {
         return id;

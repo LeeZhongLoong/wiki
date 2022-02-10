@@ -1,4 +1,3 @@
-import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -7,6 +6,8 @@ import 'ant-design-vue/dist/antd.css';
 //导入图标
 import * as Icons from '@ant-design/icons-vue';
 import axios from "axios";
+import {Tool} from "@/util/tool";
+import {createApp} from "vue";
 //统一访问路径
 axios.defaults.baseURL=process.env.VUE_APP_URL;
 /**
@@ -14,6 +15,13 @@ axios.defaults.baseURL=process.env.VUE_APP_URL;
  */
 axios.interceptors.request.use(function (config){
     console.log('请求参数:',config);
+    const token=store.state.user.token;
+    //拦截器加入token
+    if (Tool.isNotEmpty(token)){
+        config.headers={};
+        config.headers.token=token;
+        console.log("请求headers增加token:",token);
+    }
     return config;
 },function (error){
     console.log("请求返回错误",error)
@@ -26,8 +34,6 @@ axios.interceptors.response.use(function (response){
     console.log("返回错误",error)
     return Promise.reject(error);
 });
-
-
 
 const app=createApp(App)
 app.use(Antd).use(store).use(router).mount('#app')

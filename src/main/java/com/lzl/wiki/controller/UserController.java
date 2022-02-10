@@ -43,7 +43,7 @@ public class UserController {
     private UserServiceImpl userService;
 
     @Resource
-    private RedisTemplate<Long, UserLoginResp> redisTemplate;
+    private RedisTemplate<String, UserLoginResp> redisTemplate;
 
     //    添加时间戳
     @Resource
@@ -132,20 +132,20 @@ public class UserController {
         userLoginResp.setToken(token.toString());
 //        将token放入到redis中3600ms=一小时
 //        将一个类放入到redis中要序列化1、在类上implements Serializable 2、如下转为json格式JSONObject.toJSONString(userLoginResp)
-        redisTemplate.opsForValue().set(token, userLoginResp,3600*24, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(token.toString(), userLoginResp,3600*24, TimeUnit.SECONDS);
         resp.setContent(userLoginResp);
         return resp;
     }
 
     /**
      * 登出的方法
-     * @param id 根据token删除
+     * @param token 根据token删除
      * @return
      */
     @GetMapping("/logout/{token}")
     public CommonResp logout(@PathVariable String token){
         CommonResp resp=new CommonResp();
-        redisTemplate.delete(Long.valueOf(token));
+        redisTemplate.delete(token);
         LOG.info("从redis中删除token:{}",token);
         return resp;
     }
