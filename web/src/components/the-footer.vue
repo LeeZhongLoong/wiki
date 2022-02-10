@@ -3,7 +3,7 @@
   <!--    公共的尾部-->
   <a-layout-footer style="text-align: center">
 
-   <div v-show="user.name">
+   <div v-show="user.id">
      欢迎:{{user.name}}
    </div>
     第一个实战项目Wiki电子书

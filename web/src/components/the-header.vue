@@ -55,7 +55,7 @@
 
 <!--定义的组件-->
 <script lang="ts">
-import {defineComponent, ref} from 'vue';
+import {computed, defineComponent, ref} from 'vue';
 import axios from "axios";
 import {message} from "ant-design-vue";
 import store from "@/store";
@@ -69,8 +69,7 @@ export default defineComponent({
   name: 'the-header',
   setup(){
     //用来显示登录名的变量
-    const user=ref()
-    user.value={};
+    const user=computed(()=> store.state.user)
     //用来登录的变量
     const loginUser=ref({
       loginName:"test",
@@ -96,8 +95,7 @@ export default defineComponent({
         if (data.success){
           loginModalVisible.value=false;
           message.success("已安全着陆~！");
-          user.value=data.content;
-          //commit触发store中mutations内的方法
+          //commit触发store中mutations内的方法, 登录成功后给全局变量赋值
           store.commit("setUser",user.value);
         }else {
           message.error(data.message);
