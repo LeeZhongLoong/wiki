@@ -58,6 +58,7 @@
 import {defineComponent, ref} from 'vue';
 import axios from "axios";
 import {message} from "ant-design-vue";
+import store from "@/store";
 //密码加密
 declare let hexMd5:any;
 //盐值
@@ -96,6 +97,8 @@ export default defineComponent({
           loginModalVisible.value=false;
           message.success("已安全着陆~！");
           user.value=data.content;
+          //commit触发store中mutations内的方法
+          store.commit("setUser",user.value);
         }else {
           message.error(data.message);
         }

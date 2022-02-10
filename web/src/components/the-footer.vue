@@ -2,6 +2,10 @@
 <!--  设置尾部组件-->
   <!--    公共的尾部-->
   <a-layout-footer style="text-align: center">
+
+   <div v-show="user.name">
+     欢迎:{{user.name}}
+   </div>
     第一个实战项目Wiki电子书
     <br>
     <hr>
@@ -14,10 +18,17 @@
 
 <!--设置组件-->
 <script lang="ts">
-import {defineComponent} from "vue";
+import {computed, defineComponent} from "vue";
+import store from "@/store";
 
 export default defineComponent({
 //  文件名字
-  name:'the-footer'
+  name:'the-footer',
+  setup(){
+    const user=computed(()=> store.state.user)
+    return{
+      user
+    }
+  }
 });
 </script>
