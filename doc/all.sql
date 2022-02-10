@@ -9,6 +9,8 @@ create table `user`(
     unique key `login_name_unique` (`login_name`)
 )engine=innodb default charset =utf8mb4 comment='用户';
 insert into `user` (id, login_name, name, password) values (1,'test','测试','test');
+update `user` set password='a36280cf624505470a88347c10391769' where login_name='admin';
+insert into `user` (id, login_name, name, password) values (1,'test','测试','test');
 
 #文档内容
 drop table if exists `content`;

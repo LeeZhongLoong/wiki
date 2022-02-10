@@ -49,17 +49,26 @@
         title="登录"
         v-model:visible="loginModalVisible"
         :confirm-loading="loginModalLoading"
+
         @ok="login"
         ok-text="出发!"
         cancel-text="再想想~"
     >
       <!--    表单-->
       <a-form :model="loginUser" :label-col="{span:6}" :wrapper-col="{span:18}">
-        <a-form-item label="用户名">
+        <a-form-item
+            label="用户名"
+            name="username"
+            :rules="[{ required: true, message: '请输入正确的用户名。' }]"
+        >
           <a-input v-model:value="loginUser.loginName" />
         </a-form-item>
-        <a-form-item label="密码">
-          <a-input v-model:value="loginUser.password"/>
+        <a-form-item
+            label="密码"
+            name="password"
+            :rules="[{ required: true, message: '请输入正确的密码。' }]"
+        >
+          <a-input-password v-model:value="loginUser.password" />
         </a-form-item>
       </a-form>
     </a-modal>
@@ -83,10 +92,13 @@ export default defineComponent({
   setup(){
     //用来显示登录名的变量
     const user=computed(()=> store.state.user)
+    //正则表达式
+    const FloatRegex = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,32}$/;
+
     //用来登录的变量
     const loginUser=ref({
-      loginName:"test",
-      password:"test123"
+      loginName:"admin",
+      password:"admin123"
     });
    // 显示框变量
    const loginModalVisible=ref(false);
@@ -101,19 +113,30 @@ export default defineComponent({
     const login = () => {
       console.log("开始登录")
       loginModalLoading.value=true;
-      loginUser.value.password=hexMd5(loginUser.value.password+KEY);
-      axios.post('user/login',loginUser.value).then((response)=>{
+      //判断密码是否符合标准
+      if (!FloatRegex.test(loginUser.value.password)){
+        //不符合弹出错误信息
+        message.warning("【密码】至少包好数字和英文，长度6-32");
+        loginUser.value.password="";
+        // location.reload();
         loginModalLoading.value=false;
-        const data=response.data;
-        if (data.success){
-          loginModalVisible.value=false;
-          message.success("已安全着陆~！");
-          //commit触发store中mutations内的方法, 登录成功后给全局变量赋值
-          store.commit("setUser",data.content);
-        }else {
-          message.error(data.message);
-        }
-      });
+        return;
+      }else {
+        //符合就登录
+        loginUser.value.password=hexMd5(loginUser.value.password+KEY);
+        axios.post('user/login',loginUser.value).then((response)=>{
+          loginModalLoading.value=false;
+          const data=response.data;
+          if (data.success){
+            loginModalVisible.value=false;
+            message.success("已安全着陆~！");
+            //commit触发store中mutations内的方法, 登录成功后给全局变量赋值
+            store.commit("setUser",data.content);
+          }else {
+            message.error(data.message);
+          }
+        });
+      }
     };
    // 退出登录
     const logout = () => {
@@ -124,11 +147,13 @@ export default defineComponent({
           message.success("下次再见~~！");
           //commit触发store中mutations内的方法, 登录成功后给全局变量赋值
           store.commit("setUser",{});
+          loginUser.value.password="";
         }else {
           message.error(data.message);
         }
       });
     };
+
    return{
       loginModalVisible,
       loginModalLoading,
