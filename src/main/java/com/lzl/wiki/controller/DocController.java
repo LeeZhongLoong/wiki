@@ -1,6 +1,5 @@
 package com.lzl.wiki.controller;
 
-import com.lzl.wiki.mapper.DocMapperCust;
 import com.lzl.wiki.req.DocQueryReq;
 import com.lzl.wiki.req.DocSaveReq;
 import com.lzl.wiki.resp.CommonResp;
@@ -32,8 +31,7 @@ public class DocController {
 //    引入service
     @Resource
     private DocServiceImpl docService;
-//    引入自定义Mapper
-    private DocMapperCust docMapperCust;
+
 
     /**
      * 根据名字模糊查询
@@ -103,5 +101,12 @@ public class DocController {
 //        放入到泛型类中
         resp.setContent(content);
         return resp;
+    }
+
+    @GetMapping("/vote/{id}")
+    public CommonResp vote(@PathVariable Long id){
+        CommonResp commonResp=new CommonResp();
+        docService.vote(id);
+        return commonResp;
     }
 }

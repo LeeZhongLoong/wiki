@@ -20,4 +20,10 @@ public class DocServiceCustImpl implements DocServiceCust {
     public void increaseViewCount(Long id) {
         docMapperCust.increaseViewCount(id);
     }
+
+    @Override
+    public void increaseVoteCount(Long id) {
+        docMapperCust.increaseVoteCount(id);
+    }
+
 }

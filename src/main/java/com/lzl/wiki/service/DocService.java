@@ -27,4 +27,6 @@ public interface DocService {
     public List<DocQueryResp> all(Long ebookId);
 //    查询content中的内容
     public String findContent(Long id);
+//    点赞数增加
+    public void vote(Long id);
 }

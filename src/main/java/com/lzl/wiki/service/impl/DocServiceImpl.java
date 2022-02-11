@@ -164,4 +164,13 @@ public class DocServiceImpl implements DocService {
             return content.getContent();
         }
     }
+
+    /**
+     * 点赞数增加
+     * @param id
+     */
+    @Override
+    public void vote(Long id) {
+        docMapperCust.increaseVoteCount(id);
+    }
 }

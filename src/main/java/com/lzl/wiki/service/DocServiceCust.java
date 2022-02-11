@@ -11,4 +11,5 @@ package com.lzl.wiki.service;
  **/
 public interface DocServiceCust {
     public void increaseViewCount(Long id);
+    public void increaseVoteCount(Long id);
 }

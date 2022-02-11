@@ -12,5 +12,9 @@ import org.apache.ibatis.annotations.Param;
  * @date : 2022-01-08 13:08
  **/
 public interface DocMapperCust {
+//    增加阅读数
     public void increaseViewCount(@Param("id") Long id);
+//    增加点赞数
+    public void increaseVoteCount(@Param("id") Long id);
+
 }
