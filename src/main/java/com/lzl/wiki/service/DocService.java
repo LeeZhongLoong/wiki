@@ -29,4 +29,6 @@ public interface DocService {
     public String findContent(Long id);
 //    点赞数增加
     public void vote(Long id);
+//    统计文档
+    public void updateEbookInfo();
 }

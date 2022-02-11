@@ -16,5 +16,7 @@ public interface DocMapperCust {
     public void increaseViewCount(@Param("id") Long id);
 //    增加点赞数
     public void increaseVoteCount(@Param("id") Long id);
+//    统计文档树和点赞数
+    public void updateEbookInfo();
 
 }
