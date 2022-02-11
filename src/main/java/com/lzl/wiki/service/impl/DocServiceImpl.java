@@ -5,6 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.lzl.wiki.domain.Content;
 import com.lzl.wiki.domain.Doc;
 import com.lzl.wiki.domain.DocExample;
+import com.lzl.wiki.exception.BusinessException;
+import com.lzl.wiki.exception.BusinessExceptionCode;
 import com.lzl.wiki.mapper.ContentMapper;
 import com.lzl.wiki.mapper.DocMapper;
 import com.lzl.wiki.mapper.DocMapperCust;
@@ -14,6 +16,8 @@ import com.lzl.wiki.resp.DocQueryResp;
 import com.lzl.wiki.resp.PageResp;
 import com.lzl.wiki.service.DocService;
 import com.lzl.wiki.utils.CopyUtil;
+import com.lzl.wiki.utils.RedisUtil;
+import com.lzl.wiki.utils.RequestContext;
 import com.lzl.wiki.utils.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +55,9 @@ public class DocServiceImpl implements DocService {
 //    添加时间戳
     @Resource
     private SnowFlake snowFlake;
+
+    @Resource
+    public RedisUtil redisUtil;
 
     @Override
     public PageResp<DocQueryResp> list(DocQueryReq req) {
@@ -172,5 +179,13 @@ public class DocServiceImpl implements DocService {
     @Override
     public void vote(Long id) {
         docMapperCust.increaseVoteCount(id);
+//        获取ip(远程ip)如果有会员系统可以将ip换为会员系统的ip
+        String ip= RequestContext.getRemoteAddr();
+//        在redis中获取是否已经存在的ip
+        if (redisUtil.validateRepeat("DOC_VOTE"+id+"_"+ip,3600*24)){
+            docMapperCust.increaseVoteCount(id);
+        }else {
+            throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
+        }
     }
 }

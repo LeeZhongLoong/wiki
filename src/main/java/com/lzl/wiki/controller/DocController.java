@@ -79,7 +79,7 @@ public class DocController {
 
     /**
      * 删除的方法
-     * @param id 根据id删除
+     * @param idsStr 根据id删除
      * @return
      */
     @DeleteMapping("/delete/{idsStr}")
