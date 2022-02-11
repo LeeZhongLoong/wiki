@@ -14,7 +14,20 @@
           >
           </a-tree>
         </a-col>
+<!--        点赞数和阅读数-->
         <a-col :span="18">
+          <div>
+            <h2>{{doc.name}}</h2>
+            <div>
+              <span>阅读数:{{doc.viewCount}}</span>
+              &nbsp;&nbsp;
+              <span>点赞数:{{doc.voteCount}}</span>
+            </div>
+            <a-divider style="height: 2px; background-color: #9999cc" />
+          </div>
+
+        </a-col>
+        <a-col>
           <div class="wangeditor" :innerHTML="html"></div>
         </a-col>
       </a-row>
@@ -46,6 +59,9 @@ export default defineComponent({
     const html=ref();
     const defaultSelectedKeys=ref();
     defaultSelectedKeys.value=[];
+    //阅读数
+    const doc=ref();
+    doc.value={};
 
     //  数组树
     /**
@@ -93,6 +109,7 @@ export default defineComponent({
           if (Tool.isNotEmpty(level1)){
             defaultSelectedKeys.value=[level1.value[0].id];
             handleQueryContent(level1.value[0].id);
+            doc.value=level1.value[0];
           }
         }else{
           message.error(data.message);
@@ -110,6 +127,7 @@ export default defineComponent({
     const onSelect = (selectedKeys:any,info:any) => {
       console.log('selected',selectedKeys,info);
       if (Tool.isNotEmpty(selectedKeys)){
+        doc.value=info.selectedNodes[0].props;
         handleQueryContent(selectedKeys[0]);
       }
     //  加载内容
@@ -130,7 +148,8 @@ export default defineComponent({
       loading,
       html,
       onSelect,
-      defaultSelectedKeys
+      defaultSelectedKeys,
+      doc
 
     }
   },
