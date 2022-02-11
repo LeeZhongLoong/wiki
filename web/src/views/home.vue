@@ -30,7 +30,7 @@
 <!--      欢迎页面-->
 
       <div class="welcome" v-show="isShowWelcome">
-        <h1>欢迎来到知识库</h1>
+        <h1>欢迎来到龙的知识库</h1>
       </div>
 
 <!--      让他并排显示 column:3一行变为三列,gutter20每列间距为20-->
@@ -45,10 +45,19 @@
         <template #renderItem="{ item }">
           <a-list-item key="item.name">
             <template #actions>
-              <span v-for="{ type, text } in actions" :key="type">
-                <component v-bind:is="type" style="margin-right: 8px" />
-                {{ text }}
+              <span>
+                <component v-bind:is="'file-text-outlined'" style="margin-right: 8px" />
+                {{ item.docCount }}
               </span>
+              <span>
+                <component v-bind:is="'LikeOutlined'" style="margin-right: 8px" />
+                {{ item.voteCount }}
+              </span>
+              <span>
+                <component v-bind:is="'eye-outlined'" style="margin-right: 8px" />
+                {{ item.viewCount }}
+              </span>
+
             </template>
 <!--            <template #extra>-->
 <!--              <img-->
@@ -175,11 +184,11 @@ export default defineComponent({
         },
         pageSize: 3,
       },
-      actions: [
-        { type: 'StarOutlined', text: '156' },
-        { type: 'LikeOutlined', text: '156' },
-        { type: 'MessageOutlined', text: '2' },
-      ],
+      // actions: [
+      //   { type: 'StarOutlined', text: '156' },
+      //   { type: 'LikeOutlined', text: '156' },
+      //   { type: 'MessageOutlined', text: '2' },
+      // ],
     //  返回加载框的参数
       loading,
     //  分类方法，数组树
@@ -198,7 +207,6 @@ export default defineComponent({
     line-height: 50px;
     border-radius: 8%;
     margin: 5px 0;
-
   }
 </style>
 
