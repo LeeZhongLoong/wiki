@@ -7,6 +7,7 @@ import com.lzl.wiki.domain.Doc;
 import com.lzl.wiki.domain.DocExample;
 import com.lzl.wiki.mapper.ContentMapper;
 import com.lzl.wiki.mapper.DocMapper;
+import com.lzl.wiki.mapper.DocMapperCust;
 import com.lzl.wiki.req.DocQueryReq;
 import com.lzl.wiki.req.DocSaveReq;
 import com.lzl.wiki.resp.DocQueryResp;
@@ -38,6 +39,10 @@ public class DocServiceImpl implements DocService {
     //jdk自带
     @Resource
     private DocMapper docMapper;
+
+//    引入自定义Mapper
+    @Resource
+    private DocMapperCust docMapperCust;
 
     @Resource
     private ContentMapper contentMapper;
@@ -115,8 +120,12 @@ public class DocServiceImpl implements DocService {
 //            新增
 //            利用雪花算法设置新增的Id,新增id有三种算法(自增，uuid，雪花算法）
             doc.setId(snowFlake.nextId());
-            docMapper.insert(doc);
+//            因为自动生成的mapper在插入时使用的是doc实体doc实体中的viewCount和voteCount是null，但是数据定义时是由默认default 0不起作用
+//            所以自动将doc下的viewCount和voteCount置为零
+            doc.setViewCount(0);
+            doc.setVoteCount(0);
 
+            docMapper.insert(doc);
             content.setId(doc.getId());
             contentMapper.insert(content);
         }else {
@@ -147,6 +156,8 @@ public class DocServiceImpl implements DocService {
     @Override
     public String findContent(Long id) {
         Content content = contentMapper.selectByPrimaryKey(id);
+//        文档阅读数加1
+        docMapperCust.increaseViewCount(id);
         if (ObjectUtils.isEmpty(content)){
             return "";
         }else {
