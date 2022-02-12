@@ -18,6 +18,7 @@ import com.lzl.wiki.utils.RedisUtil;
 import com.lzl.wiki.utils.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -193,7 +194,9 @@ public class DocServiceImpl implements DocService {
 
 //        查询消息是哪一个文档被点赞
         Doc docDb = docMapper.selectByPrimaryKey(id);
-        wsService.sendInfo("【"+docDb.getName()+"】刚刚被点赞啦还不去看看~");
+//        增加流水号
+        String logId = MDC.get("LOG_ID");
+        wsService.sendInfo("【"+docDb.getName()+"】刚刚被点赞啦还不去看看~",logId);
     }
 
     @Override

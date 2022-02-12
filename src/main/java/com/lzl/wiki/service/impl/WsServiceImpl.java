@@ -1,6 +1,7 @@
 package com.lzl.wiki.service.impl;
 
 import com.lzl.wiki.websocket.WebSocketServer;
+import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,8 @@ public class WsServiceImpl {
     @Resource
     public WebSocketServer webSocketServer;
     @Async
-    public void sendInfo(String contextInfo) {
+    public void sendInfo(String contextInfo,String logId) {
+        MDC.put("LOG_ID",logId);
         webSocketServer.sendInfo(contextInfo);
     }
 }
