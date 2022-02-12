@@ -21,6 +21,7 @@ public class WsServiceImpl {
 
     @Resource
     public WebSocketServer webSocketServer;
+//    要使Async这个方法不能和调用的地方在同一个类
     @Async
     public void sendInfo(String contextInfo,String logId) {
         MDC.put("LOG_ID",logId);
