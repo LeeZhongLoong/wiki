@@ -19,6 +19,7 @@ import com.lzl.wiki.utils.CopyUtil;
 import com.lzl.wiki.utils.RedisUtil;
 import com.lzl.wiki.utils.RequestContext;
 import com.lzl.wiki.utils.SnowFlake;
+import com.lzl.wiki.websocket.WebSocketServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,9 @@ public class DocServiceImpl implements DocService {
 
     @Resource
     public RedisUtil redisUtil;
+
+    @Resource
+    public WebSocketServer webSocketServer;
 
     @Override
     public PageResp<DocQueryResp> list(DocQueryReq req) {
@@ -180,6 +184,8 @@ public class DocServiceImpl implements DocService {
     public void vote(Long id) {
         docMapperCust.increaseVoteCount(id);
 //        获取ip(远程ip)如果有会员系统可以将ip换为会员系统的ip
+
+
         String ip= RequestContext.getRemoteAddr();
 //        在redis中获取是否已经存在的ip
         if (redisUtil.validateRepeat("DOC_VOTE"+id+"_"+ip,3600*24)){
@@ -187,6 +193,13 @@ public class DocServiceImpl implements DocService {
         }else {
             throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
         }
+
+
+//        查询消息是哪一个文档被点赞
+        Doc docDb = docMapper.selectByPrimaryKey(id);
+//        推送的消息
+        webSocketServer.sendInfo("【"+docDb.getName()+"】刚刚被点赞啦还不去看看~");
+
     }
 
     @Override
