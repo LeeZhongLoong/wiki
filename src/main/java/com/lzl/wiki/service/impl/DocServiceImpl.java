@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
@@ -120,6 +121,8 @@ public class DocServiceImpl implements DocService {
      * 有Id是更新，无Id是新增
      * @param req
      */
+//    更改两张表要加事务,防止一个表更改了另一表出错，使用Transactional要保证调用Transactional修饰的方法的类与方法不是同一个类
+    @Transactional
     @Override
     public void save(DocSaveReq req) {
 //        给req转型
