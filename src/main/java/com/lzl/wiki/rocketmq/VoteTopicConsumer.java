@@ -1,12 +1,11 @@
 package com.lzl.wiki.rocketmq;
 
-import com.lzl.wiki.service.impl.WsServiceImpl;
+import com.lzl.wiki.websocket.WebSocketServer;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -26,14 +25,14 @@ public class VoteTopicConsumer implements RocketMQListener<MessageExt> {
 //    日志放入类
     private static final Logger LOG= LoggerFactory.getLogger(VoteTopicConsumer.class);
 //    注入webservice
+
     @Resource
-    public WsServiceImpl wsService;
+    public WebSocketServer webSocketServer;
     @Override
     public void onMessage(MessageExt messageExt) {
         byte[] body=messageExt.getBody();
         LOG.info("ROCKETMQ收到消息:{}",new String(body));
         //        增加流水号
-        String logId = MDC.get("LOG_ID");
-        wsService.sendInfo(String.valueOf(body),logId);
+        webSocketServer.sendInfo(new String(body ));
     }
 }
