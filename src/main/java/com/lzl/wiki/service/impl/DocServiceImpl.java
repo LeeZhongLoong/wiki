@@ -5,6 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.lzl.wiki.domain.Content;
 import com.lzl.wiki.domain.Doc;
 import com.lzl.wiki.domain.DocExample;
+import com.lzl.wiki.exception.BusinessException;
+import com.lzl.wiki.exception.BusinessExceptionCode;
 import com.lzl.wiki.mapper.ContentMapper;
 import com.lzl.wiki.mapper.DocMapper;
 import com.lzl.wiki.mapper.DocMapperCust;
@@ -15,10 +17,11 @@ import com.lzl.wiki.resp.PageResp;
 import com.lzl.wiki.service.DocService;
 import com.lzl.wiki.utils.CopyUtil;
 import com.lzl.wiki.utils.RedisUtil;
+import com.lzl.wiki.utils.RequestContext;
 import com.lzl.wiki.utils.SnowFlake;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -56,12 +59,14 @@ public class DocServiceImpl implements DocService {
     private SnowFlake snowFlake;
 
     @Resource
+    public WsServiceImpl wsService;
+
+    @Resource
     public RedisUtil redisUtil;
 
-
 //    注入rocketMQ
-    @Resource
-    private RocketMQTemplate rocketMQTemplate;
+//    @Resource
+//    private RocketMQTemplate rocketMQTemplate;
 
     @Override
     public PageResp<DocQueryResp> list(DocQueryReq req) {
@@ -187,20 +192,20 @@ public class DocServiceImpl implements DocService {
         docMapperCust.increaseVoteCount(id);
 //        获取ip(远程ip)如果有会员系统可以将ip换为会员系统的ip
 
-//        String ip= RequestContext.getRemoteAddr();
-////        在redis中获取是否已经存在的ip
-//        if (redisUtil.validateRepeat("DOC_VOTE"+id+"_"+ip,3600*24)){
-//            docMapperCust.increaseVoteCount(id);
-//        }else {
-//            throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
-//        }
+        String ip= RequestContext.getRemoteAddr();
+//        在redis中获取是否已经存在的ip
+        if (redisUtil.validateRepeat("DOC_VOTE"+id+"_"+ip,3600*24)){
+            docMapperCust.increaseVoteCount(id);
+        }else {
+            throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
+        }
 
 //        查询消息是哪一个文档被点赞
         Doc docDb = docMapper.selectByPrimaryKey(id);
 ////        增加流水号
-//        String logId = MDC.get("LOG_ID");
-//        wsService.sendInfo("【"+docDb.getName()+"】刚刚被点赞啦还不去看看~",logId);
-        rocketMQTemplate.convertAndSend("VOTE_TOPIC","【"+docDb.getName()+"】刚刚被点赞啦还不去看看~");
+        String logId = MDC.get("LOG_ID");
+        wsService.sendInfo("【"+docDb.getName()+"】刚刚被点赞啦还不去看看~",logId);
+//        rocketMQTemplate.convertAndSend("VOTE_TOPIC","【"+docDb.getName()+"】刚刚被点赞啦还不去看看~");
     }
 
     @Override
