@@ -1,4 +1,22 @@
+
+select t1.`date` as `date`,
+       sum(t1.view_count) as viewCount,
+       sum(t1.vote_count) as voteCount,
+       sum(t1.view_increase) as view_increase,
+       sum(t1.vote_increase) as vote_increase,
+
+from
+     ebook_snapshot t1
+where
+      t1.`date` >=date_sub(curdate(),interval 1 day )
+group by
+         t1.`date`
+order by
+         t1.`date` asc;
+
+
 insert into ebook_snapshot(ebook_id, `date`, view_count, vote_count, view_increase, vote_increase)
+
 select t1.id,curdate(),0,0,0,0
 from ebook t1
 where not exists(select 1

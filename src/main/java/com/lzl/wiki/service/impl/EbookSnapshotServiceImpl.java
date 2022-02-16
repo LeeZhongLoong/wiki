@@ -1,10 +1,12 @@
 package com.lzl.wiki.service.impl;
 
 import com.lzl.wiki.mapper.EbookSnapshotMapperCust;
+import com.lzl.wiki.resp.StatisticResp;
 import com.lzl.wiki.service.EbookSnapshotService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <h3>wiki</h3>
@@ -23,5 +25,10 @@ public class EbookSnapshotServiceImpl implements EbookSnapshotService {
     @Override
     public void genSnapshot() {
         ebookSnapshotMapperCust.genSnapshot();
+    }
+
+    @Override
+    public List<StatisticResp> getStatistic() {
+        return ebookSnapshotMapperCust.getStatistic();
     }
 }
