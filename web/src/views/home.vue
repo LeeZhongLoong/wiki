@@ -30,7 +30,7 @@
 <!--      欢迎页面-->
 
       <div class="welcome" v-show="isShowWelcome">
-        <h1>欢迎来到龙的知识库</h1>
+        <the-welcome></the-welcome>
       </div>
 
 <!--      让他并排显示 column:3一行变为三列,gutter20每列间距为20-->
@@ -91,8 +91,7 @@ import {defineComponent, onMounted, ref} from "vue";
 import axios from "axios";
 import {message} from "ant-design-vue";
 import {Tool} from "@/util/tool";
-
-
+import TheWelcome  from '@/components/the-welcome.vue';
 
 // for (let i = 0; i < 23; i++) {
 //   listData.push({
@@ -108,6 +107,9 @@ import {Tool} from "@/util/tool";
 
 export default defineComponent({
   name:'Home',
+  components:{
+    TheWelcome
+  },
   setup(){
     // console.log("111"+process.env.VUE_APP_URL);
     //1、第一种方法,将数据变为响应式数据，动态数据

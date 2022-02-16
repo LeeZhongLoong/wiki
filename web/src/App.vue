@@ -26,7 +26,7 @@ export default defineComponent({
   components:{
     TheHeader,
     TheFooter
-  }
+  },
 });
 </script>
 
