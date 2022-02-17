@@ -28,9 +28,8 @@ public class EbookSnapshotController {
     @GetMapping("/get-statistic")
     public CommonResp getStatistic(){
         List<StatisticResp> statisticResp= ebookSnapshotService.getStatistic();
-        CommonResp<StatisticResp> commonResp=new CommonResp<>();
+        CommonResp<List<StatisticResp>> commonResp=new CommonResp<>();
+        commonResp.setContent(statisticResp);
         return commonResp;
     }
-
-
 }

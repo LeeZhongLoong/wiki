@@ -16,7 +16,6 @@ order by
 
 
 insert into ebook_snapshot(ebook_id, `date`, view_count, vote_count, view_increase, vote_increase)
-
 select t1.id,curdate(),0,0,0,0
 from ebook t1
 where not exists(select 1
