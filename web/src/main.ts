@@ -8,6 +8,7 @@ import * as Icons from '@ant-design/icons-vue';
 import axios from "axios";
 import {Tool} from "@/util/tool";
 import {createApp} from "vue";
+
 //统一访问路径
 axios.defaults.baseURL=process.env.VUE_APP_URL;
 /**
