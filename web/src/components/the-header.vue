@@ -96,9 +96,10 @@ export default defineComponent({
     const FloatRegex = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,32}$/;
 
     //用来登录的变量
+    //管理员:admin 密码:admin123
     const loginUser=ref({
-      loginName:"admin",
-      password:"admin123"
+      loginName:"test",
+      password:"test"
     });
    // 显示框变量
    const loginModalVisible=ref(false);
