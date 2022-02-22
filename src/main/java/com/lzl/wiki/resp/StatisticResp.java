@@ -1,9 +1,13 @@
 package com.lzl.wiki.resp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class StatisticResp {
 
+//    使用注解返回前端折线图横轴日期时正常(月和日)。
+    @JsonFormat(pattern = "MM-dd",timezone = "GMT+8")
     private Date date;
 
     private Integer viewCount;
