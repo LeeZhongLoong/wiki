@@ -2,7 +2,7 @@
 <template>
   <!--    公共的头部-->
   <a-layout-header class="header">
-    <div class="logo" />
+    <div class="logo">小小知识库</div>
     <a-menu
         theme="dark"
         mode="horizontal"
@@ -169,6 +169,7 @@ export default defineComponent({
 </script>
 
 <style>
+
 .login-menu{
   position: absolute;
   left: 1250px;
@@ -181,4 +182,12 @@ export default defineComponent({
   /*float: right;*/
   color: white;
 }
+.logo{
+  width: 120px;
+  height: 31px;
+  float: left;
+  color: white;
+  font-size: 18px;
+}
+
 </style>
