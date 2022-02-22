@@ -230,6 +230,11 @@ export default defineComponent({
   font-size: 16px !important;
   font-weight: 600;
 }
+/*让富文本中的图片不能超出自适应*/
+.wangeditor img{
+  max-width: 100%;
+  height: auto;
+}
 .vote-div{
   padding: 15px;
   text-align: center;
