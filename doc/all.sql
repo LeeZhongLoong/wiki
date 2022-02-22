@@ -1,3 +1,17 @@
+select
+    t1.`date` as `date`,
+       sum(t1.view_increase) as viewIncrease,
+       sum(t1.view_increase) as voteIncrease
+    from
+        ebook_snapshot t1
+    where
+        t1.`date` between date_sub(curdate(),interval 30 day ) and date_sub(curdate(),interval 1 day )
+    group by
+        t1.`date`
+    order by
+        t1.`date`  asc
+
+
 
 select t1.`date` as `date`,
        sum(t1.view_count) as viewCount,

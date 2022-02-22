@@ -25,9 +25,19 @@ public class EbookSnapshotController {
     @Resource
     private EbookSnapshotServiceImpl ebookSnapshotService;
 
+//    获总的和今天与昨天的点赞数和阅读数。
     @GetMapping("/get-statistic")
     public CommonResp getStatistic(){
         List<StatisticResp> statisticResp= ebookSnapshotService.getStatistic();
+        CommonResp<List<StatisticResp>> commonResp=new CommonResp<>();
+        commonResp.setContent(statisticResp);
+        return commonResp;
+    }
+
+//    获取30天的点赞和阅读记录
+    @GetMapping("get-30-statistic")
+    public CommonResp get30Statistic(){
+        List<StatisticResp> statisticResp= ebookSnapshotService.get30Statistic();
         CommonResp<List<StatisticResp>> commonResp=new CommonResp<>();
         commonResp.setContent(statisticResp);
         return commonResp;

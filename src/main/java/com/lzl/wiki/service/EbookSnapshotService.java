@@ -17,8 +17,10 @@ public interface EbookSnapshotService {
 //    定时任务电子快照
     public void genSnapshot();
 
-//
+//    获取两天的点赞数和阅读数
     public List<StatisticResp> getStatistic();
+//    获取30天的记录
+    public List<StatisticResp> get30Statistic();
 
 
 }
