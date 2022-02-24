@@ -9,7 +9,7 @@ select
     group by
         t1.`date`
     order by
-        t1.`date`  asc
+        t1.`date`  asc;
 
 
 
@@ -17,7 +17,7 @@ select t1.`date` as `date`,
        sum(t1.view_count) as viewCount,
        sum(t1.vote_count) as voteCount,
        sum(t1.view_increase) as view_increase,
-       sum(t1.vote_increase) as vote_increase,
+       sum(t1.vote_increase) as vote_increase
 
 from
      ebook_snapshot t1
@@ -77,7 +77,6 @@ create table `user`(
 )engine=innodb default charset =utf8mb4 comment='用户';
 insert into `user` (id, login_name, name, password) values (1,'test','测试','test');
 update `user` set password='a36280cf624505470a88347c10391769' where login_name='admin';
-insert into `user` (id, login_name, name, password) values (1,'test','测试','test');
 
 #文档内容
 drop table if exists `content`;
@@ -150,9 +149,9 @@ create table `ebook` (
     `category2_id` bigint comment '分类2',
     `description` varchar(200) comment '描述',
     `cover` varchar(200) comment '封面',
-    `doc_count` int comment '封面',
-    `view_count` int comment '阅读数',
-    `vote_count` int comment '点赞数',
+    `doc_count` int not null default  0  comment '文档数',
+    `view_count` int not null default 0  comment '阅读数',
+    `vote_count` int not null default 0  comment '点赞数',
     primary key (`id`)
 ) engine=innodb default charset=utf8mb4 comment '电子书';
 
